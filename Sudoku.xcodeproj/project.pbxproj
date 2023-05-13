@@ -13,6 +13,7 @@
 		874B7ABE29E42841001BFE31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */; };
 		874B7AC029E42841001BFE31 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7ABF29E42841001BFE31 /* Persistence.swift */; };
 		874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */; };
+		87E79F742A0FE17600B6AE73 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 87E79F732A0FE17600B6AE73 /* README.md */; };
 		87F1212B29EAAFA9008FD529 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212A29EAAFA9008FD529 /* BoardView.swift */; };
 		87F1213429EAB032008FD529 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212D29EAB032008FD529 /* UIColorExtension.swift */; };
 		87F1213529EAB032008FD529 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212E29EAB032008FD529 /* Logger.swift */; };
@@ -31,6 +32,7 @@
 		874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		874B7ABF29E42841001BFE31 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		874B7AC229E42841001BFE31 /* Sudoku.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Sudoku.xcdatamodel; sourceTree = "<group>"; };
+		87E79F732A0FE17600B6AE73 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		87F1212A29EAAFA9008FD529 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
 		87F1212D29EAB032008FD529 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		87F1212E29EAB032008FD529 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 		874B7AAA29E4283B001BFE31 = {
 			isa = PBXGroup;
 			children = (
+				87E79F732A0FE17600B6AE73 /* README.md */,
 				874B7AB529E4283C001BFE31 /* Sudoku */,
 				874B7AB429E4283C001BFE31 /* Products */,
 			);
@@ -163,6 +166,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87E79F742A0FE17600B6AE73 /* README.md in Resources */,
 				874B7ABE29E42841001BFE31 /* Preview Assets.xcassets in Resources */,
 				874B7ABB29E42841001BFE31 /* Assets.xcassets in Resources */,
 			);
