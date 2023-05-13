@@ -13,6 +13,14 @@
 		874B7ABE29E42841001BFE31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */; };
 		874B7AC029E42841001BFE31 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7ABF29E42841001BFE31 /* Persistence.swift */; };
 		874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */; };
+		87F1212B29EAAFA9008FD529 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212A29EAAFA9008FD529 /* BoardView.swift */; };
+		87F1213429EAB032008FD529 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212D29EAB032008FD529 /* UIColorExtension.swift */; };
+		87F1213529EAB032008FD529 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212E29EAB032008FD529 /* Logger.swift */; };
+		87F1213629EAB032008FD529 /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1212F29EAB032008FD529 /* LanguageSettings.swift */; };
+		87F1213729EAB032008FD529 /* Localizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1213029EAB032008FD529 /* Localizer.swift */; };
+		87F1213829EAB032008FD529 /* FileUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1213129EAB032008FD529 /* FileUtil.swift */; };
+		87F1213929EAB032008FD529 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1213229EAB032008FD529 /* StringExtension.swift */; };
+		87F1213A29EAB032008FD529 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87F1213329EAB032008FD529 /* UIImageExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +31,14 @@
 		874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		874B7ABF29E42841001BFE31 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		874B7AC229E42841001BFE31 /* Sudoku.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Sudoku.xcdatamodel; sourceTree = "<group>"; };
+		87F1212A29EAAFA9008FD529 /* BoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardView.swift; sourceTree = "<group>"; };
+		87F1212D29EAB032008FD529 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		87F1212E29EAB032008FD529 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		87F1212F29EAB032008FD529 /* LanguageSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LanguageSettings.swift; sourceTree = "<group>"; };
+		87F1213029EAB032008FD529 /* Localizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localizer.swift; sourceTree = "<group>"; };
+		87F1213129EAB032008FD529 /* FileUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtil.swift; sourceTree = "<group>"; };
+		87F1213229EAB032008FD529 /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		87F1213329EAB032008FD529 /* UIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +71,9 @@
 		874B7AB529E4283C001BFE31 /* Sudoku */ = {
 			isa = PBXGroup;
 			children = (
+				87F1212C29EAB032008FD529 /* Utils */,
 				874B7AB629E4283C001BFE31 /* SudokuApp.swift */,
+				87F1212A29EAAFA9008FD529 /* BoardView.swift */,
 				874B7AB829E4283C001BFE31 /* ContentView.swift */,
 				874B7ABA29E42841001BFE31 /* Assets.xcassets */,
 				874B7ABF29E42841001BFE31 /* Persistence.swift */,
@@ -71,6 +89,20 @@
 				874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		87F1212C29EAB032008FD529 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				87F1212D29EAB032008FD529 /* UIColorExtension.swift */,
+				87F1212E29EAB032008FD529 /* Logger.swift */,
+				87F1212F29EAB032008FD529 /* LanguageSettings.swift */,
+				87F1213029EAB032008FD529 /* Localizer.swift */,
+				87F1213129EAB032008FD529 /* FileUtil.swift */,
+				87F1213229EAB032008FD529 /* StringExtension.swift */,
+				87F1213329EAB032008FD529 /* UIImageExtension.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -143,10 +175,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87F1213729EAB032008FD529 /* Localizer.swift in Sources */,
 				874B7AC029E42841001BFE31 /* Persistence.swift in Sources */,
 				874B7AB929E4283C001BFE31 /* ContentView.swift in Sources */,
+				87F1212B29EAAFA9008FD529 /* BoardView.swift in Sources */,
 				874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */,
+				87F1213529EAB032008FD529 /* Logger.swift in Sources */,
 				874B7AB729E4283C001BFE31 /* SudokuApp.swift in Sources */,
+				87F1213629EAB032008FD529 /* LanguageSettings.swift in Sources */,
+				87F1213429EAB032008FD529 /* UIColorExtension.swift in Sources */,
+				87F1213929EAB032008FD529 /* StringExtension.swift in Sources */,
+				87F1213829EAB032008FD529 /* FileUtil.swift in Sources */,
+				87F1213A29EAB032008FD529 /* UIImageExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
