@@ -32,7 +32,6 @@ struct MainMenuView: View {
 					.font(.title)
 
 				VStack (alignment: .center, spacing: 40) {
-					
 					Button(action: { Logger.debug("starting new game") } ) {
 						NavigationLink {
 							BoardView()
@@ -63,7 +62,7 @@ struct MainMenuView: View {
 							VStack(alignment: .center, spacing: 150) {
 								Text("Highscore")
 									.font(.title)
-								
+
 								// render highscore list
 								VStack(alignment: .crossAlignment, spacing: 10) {
 									HStack() {
