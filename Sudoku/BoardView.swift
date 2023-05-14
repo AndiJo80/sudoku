@@ -215,20 +215,6 @@ private struct ClearButtonView: View {
 	}
 }
 
-private struct NamedFont: Identifiable {
-	let name: String
-	let font: Font
-	var id: String { name }
-}
-
-private let namedFonts: [NamedFont] = [
-	NamedFont(name: "Large Title", font: .largeTitle),
-	NamedFont(name: "Title", font: .title),
-	NamedFont(name: "Headline", font: .headline),
-	NamedFont(name: "Body", font: .body),
-	NamedFont(name: "Caption", font: .caption)
-]
-
 struct BoardView: View {
 	private let rows = [Row(border: 1),
 						Row(border: 4),
@@ -267,11 +253,10 @@ struct BoardView: View {
 				.environmentObject(inputNumbersList)
 				.environmentObject(clearButton)
 
-			/*ForEach(namedFonts) { namedFont in
+			/*ForEach(Array(NamedFont.namedFonts.values)) { namedFont in
 				Text(namedFont.name)
 					.font(namedFont.font)
 			}*/
-
 		}
 	}
 }
