@@ -29,7 +29,7 @@ struct Row: View {
 			quadrants[0]
 			quadrants[1]
 			quadrants[2]
-		} .border(.black, width: borderWidth)
+		}.border(.black, width: borderWidth)
 	}
 }
 
@@ -82,7 +82,7 @@ struct Quadrant: View {
 	@inlinable public init(border: CGFloat) {
 		borderWidth = border
 	}
-
+	//private var cells = Array(repeating: Array(repeating: Cell(border: 1, color: .clear), count: 3), count: 3)
 	private var cells = [[Cell(border: 1, color: .clear),
 						  Cell(border: 1, color: .clear),
 						  Cell(border: 1, color: .clear)],
@@ -176,12 +176,8 @@ private struct InputNumberView: View {
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped \(inputNumber.id)")
 				for inputNumber in inputNumbersList.inputNumbersList {
-					//if (inputNumber.id != self.inputNumber.id) {
-					//	inputNumber.bgColor = .clear
-					//}
 					inputNumber.selected = (inputNumber.id == self.inputNumber.id)
 				}
-				//bgColor = .blue
 				clearButton.selected = false
 			})
 			.background(bgColor)
@@ -199,7 +195,6 @@ class ClearButton: ObservableObject {
 
 private struct ClearButtonView: View {
 	@EnvironmentObject var clearButton: ClearButton
-	@State var bgColor: Color = .clear
 	@EnvironmentObject var inputNumbersList: InputNumbersList
 
 	var body: some View {
