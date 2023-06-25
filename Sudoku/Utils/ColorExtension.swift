@@ -1,13 +1,13 @@
 //
-//  UIColorExtension.swift
-//  Lori
+//  ColorExtension.swift
+//  Sudoku
 //
-//  Created by Andreas Job on 04.12.20.
+//  Created by Andreas Job on 18.06.23.
 //
 
-import UIKit
+import SwiftUI
 
-public extension UIColor {
+public extension Color {
 	/*static let articleDerColor = UIColor.color(named: "ArticleDerColor")
 	static let articleDieColor = UIColor.color(named: "ArticleDieColor")
 	static let articleDasColor = UIColor.color(named: "ArticleDasColor")
@@ -54,18 +54,30 @@ public extension UIColor {
 		"ShadowColor"
 	]*/
 
-	private static func color(named: String) -> UIColor {
-		return UIColor(named: named)!
+	static let selectedButtonColor = Color.color(name: "SelectedButtonColor")
+
+	static let allColors: [Color] = [
+		selectedButtonColor
+	]
+
+	static let allNames = [
+		"SelectedButtonColor"
+	]
+
+	private static func color(name: String) -> Color {
+		return Color(name)
 	}
 
-	func brightned(factor: Float) -> UIColor {
+	func brightned(factor: Float) -> Color {
+		let uiColor = UIColor(cgColor: self.cgColor!)
 		var hue = CGFloat(0)
 		var saturation = CGFloat(0)
 		var brightness = CGFloat(0)
 		var alpha = CGFloat(0)
-		self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
+		uiColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
 		brightness = brightness * CGFloat(factor)
-		let changedColor = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
+		//let changedColor = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
+		let changedColor = Color(hue: hue, saturation: saturation, brightness: brightness, opacity: alpha)
 		return changedColor
 	}
 }

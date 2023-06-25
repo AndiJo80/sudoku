@@ -37,8 +37,8 @@ struct Cell: View {
 	var foregroundColor: Color
 	var borderWidth: CGFloat
 	@State var value = " "
-	@EnvironmentObject var inputNumbersList: InputNumbersList
-	@EnvironmentObject var clearButton: ClearButton
+	@EnvironmentObject private var inputNumbersList: InputNumbersList
+	@EnvironmentObject private var clearButton: ClearButton
 
 	@inlinable public init(border: CGFloat, color: Color) {
 		borderWidth = border
@@ -73,6 +73,10 @@ struct Cell: View {
 			print("Tapped cell")
 			value = String(selected.id)
 		}
+	}
+
+	public func setValue(_ newVal: String) {
+		value = newVal
 	}
 }
 
@@ -216,6 +220,7 @@ private struct ClearButtonView: View {
 }
 
 struct BoardView: View {
+	private var newGame: Bool
 	private let rows = [Row(border: 1),
 						Row(border: 4),
 						Row(border: 1)]
@@ -226,8 +231,14 @@ struct BoardView: View {
 		return (rowNr < 3) ? rows[rowNr].cellAt(row: cellRow, col: col) : nil
 	}
 
-	@StateObject var inputNumbersList = InputNumber.getInputNumbersList()
-	@StateObject var clearButton = ClearButton()
+	@StateObject private var inputNumbersList = InputNumber.getInputNumbersList()
+	@StateObject private var clearButton = ClearButton()
+
+	@Environment(\.scenePhase) private var scenePhase
+
+	init(newGame: Bool) {
+		self.newGame = newGame
+	}
 
 	var body: some View {
 		VStack {
@@ -240,7 +251,7 @@ struct BoardView: View {
 			.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
 			.environmentObject(inputNumbersList)
 			.environmentObject(clearButton)
-
+			
 			HStack {
 				ForEach($inputNumbersList.inputNumbersList) { inputNumber in
 					InputNumberView(inputNumber: inputNumber, bgColor: inputNumber.bgColor, board: self)
@@ -248,21 +259,47 @@ struct BoardView: View {
 						.environmentObject(clearButton)
 				}
 			}.padding(.horizontal, 10)
-
+			
 			ClearButtonView()
 				.environmentObject(inputNumbersList)
 				.environmentObject(clearButton)
 
 			/*ForEach(Array(NamedFont.namedFonts.values)) { namedFont in
-				Text(namedFont.name)
-					.font(namedFont.font)
-			}*/
+			 Text(namedFont.name)
+			 .font(namedFont.font)
+			 }*/
 		}
+		.onAppear(perform: {
+			Logger.debug("onAppear triggered")
+				for  row in 0...8 {
+					for col in 0...8 {
+						let cell = cellAt(row: row, col: col)
+						if (cell != nil) { print("got cell") }
+						cell?.setValue("2")
+					}
+				}
+		})
+		.onDisappear(perform: {
+			Logger.debug("onDisappear triggered")
+		})
+		.onChange(of: scenePhase, perform: { value in
+			Logger.debug("onChange triggered")
+			switch scenePhase {
+				case .active:
+					print("Active")
+				case .inactive:
+					print("Inactive")
+				case .background:
+					print("Background")
+				default:
+					print("Unknown scenephase")
+			}
+		})
 	}
 }
 
 struct BoardView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardView()
+        BoardView(newGame: true)
     }
 }

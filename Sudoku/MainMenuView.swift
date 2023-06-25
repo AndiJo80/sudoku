@@ -25,16 +25,18 @@ fileprivate let highscores = [
 ]
 
 struct MainMenuView: View {
-    var body: some View {
+	var body: some View {
 		NavigationView {
 			VStack (alignment: .center, spacing: 150) {
 				Text("Sudoku")
 					.font(.title)
 
 				VStack (alignment: .center, spacing: 40) {
-					Button(action: { Logger.debug("starting new game") } ) {
+					Button(action: {
+						Logger.debug("starting new game")
+					}) {
 						NavigationLink {
-							BoardView()
+							NewGameView()
 						} label: {
 							Text("New Game")
 								.frame(minWidth: 150, minHeight: 30)
@@ -45,37 +47,35 @@ struct MainMenuView: View {
 
 					Button(action: { Logger.debug("continue running game") }) {
 						NavigationLink {
-							BoardView()
+							BoardView(newGame: false)
 						} label: {
 							Text("Continue")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
 								.border(.black, width: 1)
 						}
-					}.disabled(true)
+					}.disabled(false)
 
-					Button(action: {
-						
-					}) {
+					Button(action: { Logger.debug("showing highscore") }) {
 						NavigationLink {
 							// Highscore View
 							VStack(alignment: .center, spacing: 150) {
 								Text("Highscore")
 									.font(.title)
-
+								
 								// render highscore list
 								VStack(alignment: .crossAlignment, spacing: 10) {
 									HStack() {
 										Text("Name").font(NamedFont.headline.font)
 										Text("Score").font(NamedFont.headline.font)
 											.alignmentGuide(.crossAlignment,
-												computeValue: { d in d[HorizontalAlignment.leading] })
+															computeValue: { d in d[HorizontalAlignment.leading] })
 									}
 									ForEach(0..<highscores.count, id: \.self) { idx in
 										HStack() {
 											Text(highscores[idx].name)
 											Text("\(highscores[idx].score)").alignmentGuide(.crossAlignment,
-												computeValue: { d in d[HorizontalAlignment.leading] })
+																							computeValue: { d in d[HorizontalAlignment.leading] })
 										}
 									}
 								}
@@ -87,10 +87,8 @@ struct MainMenuView: View {
 								.border(.black, width: 1)
 						}
 					}
-					
-					Button(action: {
-						
-					}) {
+
+					Button(action: { Logger.debug("showing settings") }) {
 						Text("Settings")
 							.frame(minWidth: 150, minHeight: 30)
 							.padding(.all, 10)
