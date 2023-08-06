@@ -13,6 +13,7 @@
 		874B7ABE29E42841001BFE31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */; };
 		874B7AC029E42841001BFE31 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7ABF29E42841001BFE31 /* Persistence.swift */; };
 		874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */; };
+		876400F52A5048A800D3398E /* BoardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876400F42A5048A800D3398E /* BoardData.swift */; };
 		878585222A3DDF590063C9E3 /* NewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585212A3DDF590063C9E3 /* NewGameView.swift */; };
 		878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585252A3F3B940063C9E3 /* ColorExtension.swift */; };
 		878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585272A471CD30063C9E3 /* TimerTestView.swift */; };
@@ -36,6 +37,7 @@
 		874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		874B7ABF29E42841001BFE31 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		874B7AC229E42841001BFE31 /* Sudoku.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Sudoku.xcdatamodel; sourceTree = "<group>"; };
+		876400F42A5048A800D3398E /* BoardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardData.swift; sourceTree = "<group>"; };
 		878585212A3DDF590063C9E3 /* NewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameView.swift; sourceTree = "<group>"; };
 		878585252A3F3B940063C9E3 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		878585272A471CD30063C9E3 /* TimerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTestView.swift; sourceTree = "<group>"; };
@@ -87,12 +89,13 @@
 				87F1212A29EAAFA9008FD529 /* BoardView.swift */,
 				87E79F762A111BC600B6AE73 /* MainMenuView.swift */,
 				878585212A3DDF590063C9E3 /* NewGameView.swift */,
-				874B7AB829E4283C001BFE31 /* ContentView.swift */,
+				876400F42A5048A800D3398E /* BoardData.swift */,
 				874B7ABA29E42841001BFE31 /* Assets.xcassets */,
 				874B7ABF29E42841001BFE31 /* Persistence.swift */,
 				874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */,
 				874B7ABC29E42841001BFE31 /* Preview Content */,
 				878585272A471CD30063C9E3 /* TimerTestView.swift */,
+				874B7AB829E4283C001BFE31 /* ContentView.swift */,
 			);
 			path = Sudoku;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 				878585222A3DDF590063C9E3 /* NewGameView.swift in Sources */,
 				87E79F792A111C3A00B6AE73 /* NamedFont.swift in Sources */,
 				874B7AB929E4283C001BFE31 /* ContentView.swift in Sources */,
+				876400F52A5048A800D3398E /* BoardData.swift in Sources */,
 				87F1212B29EAAFA9008FD529 /* BoardView.swift in Sources */,
 				874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */,
 				87F1213529EAB032008FD529 /* Logger.swift in Sources */,

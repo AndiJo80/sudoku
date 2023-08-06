@@ -48,6 +48,7 @@ struct MainMenuView: View {
 					Button(action: { Logger.debug("continue running game") }) {
 						NavigationLink {
 							BoardView(newGame: false)
+								.environmentObject(BoardData(difficulty: .medium))
 						} label: {
 							Text("Continue")
 								.frame(minWidth: 150, minHeight: 30)

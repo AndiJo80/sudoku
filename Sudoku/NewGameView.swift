@@ -60,6 +60,7 @@ struct NewGameView: View {
 				Button(action: { Logger.debug("starting new game") }) {
 					NavigationLink {
 						BoardView(newGame: true)
+							.environmentObject(BoardData(difficulty: difficulty))
 							.navigationBarBackButtonHidden(true)
 					} label: {
 						Text("Start")
