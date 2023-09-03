@@ -68,6 +68,7 @@ struct Cell: View {
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
+				.foregroundColor(boardData.colors[cellIdx])
 		}.onAppear {
 			let boardDataValue = boardData.valueAt(index: cellIdx)
 			value = (boardDataValue > 0) ? String(boardDataValue) : " "
@@ -76,14 +77,33 @@ struct Cell: View {
 
 	private func onCellTab() {
 		Logger.debug("old cell value: \(value)")
+		if (!boardData.canChange(index: cellIdx)) {
+			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
+			return
+		}
+
 		if (clearButton.selected) {
 			Logger.debug("Tapped cell")
 			value = " "
-			boardData.values[cellIdx] = 0;
+			boardData.values[cellIdx] = -1;
+
+			//boardData.colors[cellIdx] = .black
+			boardData.validate()
 		} else if let selected = inputNumbersList.getSelected() {
 			Logger.debug("Tapped cell")
 			value = String(selected.id)
 			boardData.values[cellIdx] = selected.id;
+
+			//boardData.colors[cellIdx] = .green
+			let isValid = boardData.validate()
+			var solved = false
+			if (isValid) {
+				Logger.debug("Puzzle is valid")
+				solved = boardData.isSolved()
+			} else {
+				Logger.debug("Puzzle is not valid")
+			}
+			Logger.debug("Solved: \(solved)")
 		}
 	}
 
@@ -171,11 +191,11 @@ class InputNumbersList: ObservableObject {
 
 class InputNumber: Identifiable {
 	public var id: Int
-	public var bgColor: Color = Color.clear {
+	public var bgColor: Color = Color.clear /* ---debug code--- {
 		didSet { Logger.debug("new bgColor for InputNumber \(id): \(bgColor)") }
-	}
+	}*/
 	public var selected = false {
-		didSet { if (selected) { Logger.debug("selected InputNumber: \(id)"); bgColor = .blue; } else { bgColor = .clear } }
+		didSet { if (selected) { /* ---debug code--- Logger.debug("selected InputNumber: \(id)");*/ bgColor = .blue; } else { bgColor = .clear } }
 	}
 
 	init(_ id: Int) {
@@ -221,11 +241,11 @@ private struct InputNumberView: View {
 }
 
 class ClearButton: ObservableObject {
-	@Published public var bgColor: Color = Color.clear {
+	@Published public var bgColor: Color = Color.clear /* ---debug code--- {
 		didSet { Logger.debug("new bgColor for clear button: \(bgColor)") }
-	}
+	}*/
 	@Published public var selected = false {
-		didSet { if (selected) { Logger.debug("selected clear button"); bgColor = .blue; } else { bgColor = .clear } }
+		didSet { if (selected) { /* ---debug code--- Logger.debug("selected clear button");*/ bgColor = .blue; } else { bgColor = .clear } }
 	}
 }
 
@@ -305,13 +325,14 @@ struct BoardView: View {
 		}
 		.onAppear(perform: {
 			Logger.debug("onAppear triggered")
-				for  row in 0...8 {
-					for col in 0...8 {
-						let cell = cellAt(row: row, col: col)
-						if (cell != nil) { print("got cell") }
-						cell?.setValue("2")
-					}
+			/*debug test
+			for  row in 0...8 {
+				for col in 0...8 {
+					let cell = cellAt(row: row, col: col)
+					if (cell != nil) { print("got cell") }
+					cell?.setValue("2")
 				}
+			}*/
 		})
 		.onDisappear(perform: {
 			Logger.debug("onDisappear triggered")

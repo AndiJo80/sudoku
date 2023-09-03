@@ -32,8 +32,7 @@ struct TimerTestView: View {
 		}
 	}
 
-	func startTimer()
-	{
+	func startTimer() {
 		self.isTimerRunning = true
 
 		_ = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { timer in

@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum Difficulty {
-	case easy, medium, hard
+	case easy, medium, hard, expert, hell
 }
 struct NewGameView: View {
 
@@ -44,6 +44,8 @@ struct NewGameView: View {
 								.background((difficulty == .medium) ? Color.selectedButtonColor : Color.clear)
 								.border(.black, width: 1)
 						}
+					}.padding(.horizontal)
+					HStack(spacing: 10) {
 						Button(action: {
 							difficulty = .hard
 							Logger.debug("difficult is now: \(difficulty)")
@@ -52,6 +54,16 @@ struct NewGameView: View {
 								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
 								.padding(.all, 10)
 								.background((difficulty == .hard) ? Color.selectedButtonColor : Color.clear)
+								.border(.black, width: 1)
+						}
+						Button(action: {
+							difficulty = .expert
+							Logger.debug("difficult is now: \(difficulty)")
+						}) {
+							Text("Expert")
+								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
+								.padding(.all, 10)
+								.background((difficulty == .expert) ? Color.selectedButtonColor : Color.clear)
 								.border(.black, width: 1)
 						}
 					}.padding(.horizontal)
