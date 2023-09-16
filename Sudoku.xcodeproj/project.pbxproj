@@ -16,10 +16,12 @@
 		874B7ABE29E42841001BFE31 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */; };
 		874B7AC029E42841001BFE31 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7ABF29E42841001BFE31 /* Persistence.swift */; };
 		874B7AC329E42841001BFE31 /* Sudoku.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */; };
+		8758E4392AB5A911000EFC9F /* NavigationTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8758E4382AB5A910000EFC9F /* NavigationTestView.swift */; };
 		876400F52A5048A800D3398E /* BoardData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876400F42A5048A800D3398E /* BoardData.swift */; };
 		878585222A3DDF590063C9E3 /* NewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585212A3DDF590063C9E3 /* NewGameView.swift */; };
 		878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585252A3F3B940063C9E3 /* ColorExtension.swift */; };
 		878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585272A471CD30063C9E3 /* TimerTestView.swift */; };
+		87E530D42AA4C62D004059E8 /* NavigationStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E530D32AA4C62D004059E8 /* NavigationStackView.swift */; };
 		87E79F742A0FE17600B6AE73 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 87E79F732A0FE17600B6AE73 /* README.md */; };
 		87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E79F762A111BC600B6AE73 /* MainMenuView.swift */; };
 		87E79F792A111C3A00B6AE73 /* NamedFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E79F782A111C3A00B6AE73 /* NamedFont.swift */; };
@@ -43,10 +45,12 @@
 		874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		874B7ABF29E42841001BFE31 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		874B7AC229E42841001BFE31 /* Sudoku.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Sudoku.xcdatamodel; sourceTree = "<group>"; };
+		8758E4382AB5A910000EFC9F /* NavigationTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationTestView.swift; sourceTree = "<group>"; };
 		876400F42A5048A800D3398E /* BoardData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardData.swift; sourceTree = "<group>"; };
 		878585212A3DDF590063C9E3 /* NewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameView.swift; sourceTree = "<group>"; };
 		878585252A3F3B940063C9E3 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		878585272A471CD30063C9E3 /* TimerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTestView.swift; sourceTree = "<group>"; };
+		87E530D32AA4C62D004059E8 /* NavigationStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackView.swift; sourceTree = "<group>"; };
 		87E79F732A0FE17600B6AE73 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		87E79F762A111BC600B6AE73 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
 		87E79F782A111C3A00B6AE73 /* NamedFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedFont.swift; sourceTree = "<group>"; };
@@ -90,6 +94,7 @@
 		874B7AB529E4283C001BFE31 /* Sudoku */ = {
 			isa = PBXGroup;
 			children = (
+				8758E4372AB5A88E000EFC9F /* Test */,
 				87F1212C29EAB032008FD529 /* Utils */,
 				874B7AB629E4283C001BFE31 /* SudokuApp.swift */,
 				87F1212A29EAAFA9008FD529 /* BoardView.swift */,
@@ -100,8 +105,6 @@
 				874B7ABF29E42841001BFE31 /* Persistence.swift */,
 				874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */,
 				874B7ABC29E42841001BFE31 /* Preview Content */,
-				878585272A471CD30063C9E3 /* TimerTestView.swift */,
-				874B7AB829E4283C001BFE31 /* ContentView.swift */,
 				873CFC8C2A7FCBF6000A88C3 /* Sudoku.swift */,
 				872975722A88E43600748E76 /* SudokuGenerator.swift */,
 			);
@@ -114,6 +117,17 @@
 				874B7ABD29E42841001BFE31 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8758E4372AB5A88E000EFC9F /* Test */ = {
+			isa = PBXGroup;
+			children = (
+				874B7AB829E4283C001BFE31 /* ContentView.swift */,
+				878585272A471CD30063C9E3 /* TimerTestView.swift */,
+				87E530D32AA4C62D004059E8 /* NavigationStackView.swift */,
+				8758E4382AB5A910000EFC9F /* NavigationTestView.swift */,
+			);
+			path = Test;
 			sourceTree = "<group>";
 		};
 		87F1212C29EAB032008FD529 /* Utils */ = {
@@ -217,11 +231,13 @@
 				874B7AB729E4283C001BFE31 /* SudokuApp.swift in Sources */,
 				878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */,
 				878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */,
+				8758E4392AB5A911000EFC9F /* NavigationTestView.swift in Sources */,
 				87F1213629EAB032008FD529 /* LanguageSettings.swift in Sources */,
 				87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */,
 				873CFC8D2A7FCBF6000A88C3 /* Sudoku.swift in Sources */,
 				87F1213929EAB032008FD529 /* StringExtension.swift in Sources */,
 				87F1213829EAB032008FD529 /* FileUtil.swift in Sources */,
+				87E530D42AA4C62D004059E8 /* NavigationStackView.swift in Sources */,
 				87F1213A29EAB032008FD529 /* UIImageExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -40,7 +40,7 @@ struct Cell: View {
 	var foregroundColor: Color
 	private let borderWidth: CGFloat
 	private let cellIdx: Int // global quadrant number 0-81
-	@State var value = " "
+	@State var cellText = " "
 	@EnvironmentObject private var inputNumbersList: InputNumbersList
 	@EnvironmentObject private var clearButton: ClearButton
 	@EnvironmentObject private var boardData: BoardData
@@ -61,7 +61,7 @@ struct Cell: View {
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
-			Text(value)
+			Text(cellText)
 				.multilineTextAlignment(.center)
 				.padding(5)
 				//.border(.red, width: 1)
@@ -69,14 +69,18 @@ struct Cell: View {
 					onCellTab()
 				})
 				.foregroundColor(boardData.colors[cellIdx])
-		}.onAppear {
-			let boardDataValue = boardData.valueAt(index: cellIdx)
-			value = (boardDataValue > 0) ? String(boardDataValue) : " "
 		}
+		.onAppear(perform: fillCellFromBoardData)
+		.onChange(of: boardData.values, perform: { _ in fillCellFromBoardData() })
+	}
+
+	private func fillCellFromBoardData() {
+		let boardDataValue = boardData.valueAt(index: cellIdx)
+		cellText = (boardDataValue > 0) ? String(boardDataValue) : " "
 	}
 
 	private func onCellTab() {
-		Logger.debug("old cell value: \(value)")
+		Logger.debug("old cell value: \(cellText)")
 		if (!boardData.canChange(index: cellIdx)) {
 			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
 			return
@@ -84,17 +88,14 @@ struct Cell: View {
 
 		if (clearButton.selected) {
 			Logger.debug("Tapped cell")
-			value = " "
+			cellText = " "
 			boardData.values[cellIdx] = -1;
-
-			//boardData.colors[cellIdx] = .black
 			boardData.validate()
 		} else if let selected = inputNumbersList.getSelected() {
 			Logger.debug("Tapped cell")
-			value = String(selected.id)
+			cellText = String(selected.id)
 			boardData.values[cellIdx] = selected.id;
 
-			//boardData.colors[cellIdx] = .green
 			let isValid = boardData.validate()
 			var solved = false
 			if (isValid) {
@@ -102,13 +103,18 @@ struct Cell: View {
 				solved = boardData.isSolved()
 			} else {
 				Logger.debug("Puzzle is not valid")
+
+				if (selected.id != boardData.answerAt(index: cellIdx)) {
+					boardData.lifes = boardData.lifes - 1
+				}
+				
 			}
 			Logger.debug("Solved: \(solved)")
 		}
 	}
 
 	public func setValue(_ newVal: String) {
-		value = newVal
+		cellText = newVal
 	}
 }
 
@@ -272,6 +278,7 @@ private struct ClearButtonView: View {
 }
 
 struct BoardView: View {
+	//let dismiss: DismissAction
 	private var newGame: Bool
 	private let rows = [Row(rowIdx: 0, border: 1),
 						Row(rowIdx: 1, border: 4),
@@ -286,8 +293,10 @@ struct BoardView: View {
 	@StateObject private var inputNumbersList = InputNumber.getInputNumbersList()
 	@StateObject private var clearButton = ClearButton()
 	@EnvironmentObject private var boardData: BoardData
+	@State private var gameOver = false
 
 	@Environment(\.scenePhase) private var scenePhase
+	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
 	init(newGame: Bool) {
 		self.newGame = newGame
@@ -313,7 +322,7 @@ struct BoardView: View {
 						.environmentObject(clearButton)
 				}
 			}.padding(.horizontal, 10)
-			
+
 			ClearButtonView()
 				.environmentObject(inputNumbersList)
 				.environmentObject(clearButton)
@@ -325,14 +334,8 @@ struct BoardView: View {
 		}
 		.onAppear(perform: {
 			Logger.debug("onAppear triggered")
-			/*debug test
-			for  row in 0...8 {
-				for col in 0...8 {
-					let cell = cellAt(row: row, col: col)
-					if (cell != nil) { print("got cell") }
-					cell?.setValue("2")
-				}
-			}*/
+			boardData.resetBoard()
+			boardData.generatePuzzle()
 		})
 		.onDisappear(perform: {
 			Logger.debug("onDisappear triggered")
@@ -350,12 +353,27 @@ struct BoardView: View {
 					print("Unknown scenephase")
 			}
 		})
+		.onChange(of: boardData.lifes, perform: { lifes in
+			Logger.debug("Lifes changed to: \(lifes)")
+			if (lifes <= 0) {
+				gameOver = true
+				// TODO
+				//self.presentationMode.wrappedValue.dismiss()
+			}
+		})
+		.alert("Game Over", isPresented: $gameOver) {
+			Button("OK") {
+				self.presentationMode.wrappedValue.dismiss()
+			}
+		} message: {
+			Text("You lost all lifes. Final Score is: 0")
+		}
 	}
 }
 
 struct BoardView_Previews: PreviewProvider {
     static var previews: some View {
-        BoardView(newGame: true)
+		BoardView(newGame: true)
 			.environmentObject(BoardData(difficulty: .medium))
     }
 }

@@ -24,9 +24,16 @@ fileprivate let highscores = [
 	HighscoreEntry("Dummy", 10)
 ]
 
+class NavigationPath: ObservableObject {
+	@Published var path: [String] = []
+}
+
 struct MainMenuView: View {
+	//@State private var navigationPath = NavigationPath()
+	//@State private var path: [String] = []
+
 	var body: some View {
-		NavigationView {
+		NavigationStack {
 			VStack (alignment: .center, spacing: 150) {
 				Text("Sudoku")
 					.font(.title)

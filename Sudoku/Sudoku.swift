@@ -70,11 +70,11 @@ public class Sudoku {
 		}
 
 		if isOneSolutionMode {
-			try dsfOneSolutionCalculate(_sudoku: Sudoku(self), index: firstCheckPoint)
+			let solved = try dsfOneSolutionCalculate(index: firstCheckPoint)
 			if (finishes > 1) {
 				throw SudokuError("puzzle is not one-solution sudoku")
 			}
-			if (answer.contains { $0 == -1 }) {
+			if (!solved || answer.contains { $0 == -1 }) {
 				throw SudokuError("puzzle can't solve")
 			}
 			/*if (finishes == 0) {
@@ -88,43 +88,41 @@ public class Sudoku {
 		}
 	}
 
-	private func dsfOneSolutionCalculate(_sudoku: Sudoku, index: Int) throws {
+	@discardableResult
+	private func dsfOneSolutionCalculate(index: Int) throws -> Bool {
 		if (finishes > 1) {
-			return
+			return true
 		}
 
 		if (index >= 81) {
-			if (_sudoku.answer.contains { $0 == -1 }) {
-				return
+			if (answer.contains { $0 == -1 }) {
+				return false
 			}
-			answer = _sudoku.answer
-			rows = _sudoku.rows
-			cols = _sudoku.cols
-			zones = _sudoku.zones
 			finishes += 1
-			return
+			return true
 		}
 
-		if (_sudoku.answer[index] != -1) {
-			return try dsfOneSolutionCalculate(_sudoku: _sudoku, index: index + 1)
+		if (answer[index] != -1) {
+			return try dsfOneSolutionCalculate(index: index + 1)
 		}
 
 		let location = SudokuUtil.location(index: index)
 		for num in nums {
-			if (!_sudoku.rows[location.row][num] && !_sudoku.cols[location.col][num] && !_sudoku.zones[location.zone][num]) {
-				_sudoku.rows[location.row][num] = true
-				_sudoku.cols[location.col][num] = true
-				_sudoku.zones[location.zone][num] = true
-				_sudoku.answer[index] = num + 1;
+			if (!rows[location.row][num] && !cols[location.col][num] && !zones[location.zone][num]) {
+				rows[location.row][num] = true
+				cols[location.col][num] = true
+				zones[location.zone][num] = true
+				answer[index] = num + 1;
 
-				try dsfOneSolutionCalculate(_sudoku: _sudoku, index: index + 1)
-
-				_sudoku.rows[location.row][num] = false
-				_sudoku.cols[location.col][num] = false
-				_sudoku.zones[location.zone][num] = false
-				_sudoku.answer[index] = -1;
+				if (try dsfOneSolutionCalculate(index: index + 1) == false) {
+					rows[location.row][num] = false
+					cols[location.col][num] = false
+					zones[location.zone][num] = false
+					answer[index] = -1;
+				}
 			}
 		}
+		return finishes > 0
 	}
 
 	private func backtrackCalculate(index: Int) throws -> Bool {

@@ -10,8 +10,8 @@ import SwiftUI
 enum Difficulty {
 	case easy, medium, hard, expert, hell
 }
-struct NewGameView: View {
 
+struct NewGameView: View {
 	@State var difficulty: Difficulty = Difficulty.medium
 
 	var body: some View {
@@ -73,7 +73,7 @@ struct NewGameView: View {
 					NavigationLink {
 						BoardView(newGame: true)
 							.environmentObject(BoardData(difficulty: difficulty))
-							.navigationBarBackButtonHidden(true)
+							//.navigationBarBackButtonHidden(true)
 					} label: {
 						Text("Start")
 							.frame(minWidth: 150, minHeight: 30)
@@ -88,6 +88,6 @@ struct NewGameView: View {
 
 struct NewGameView_Previews: PreviewProvider {
     static var previews: some View {
-        NewGameView()
+		NewGameView()
     }
 }

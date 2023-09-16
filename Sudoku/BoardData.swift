@@ -11,15 +11,38 @@ import SwiftUI
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
 	@Published public var colors: [Color] = Array(repeating: .black, count: 81)
+	@Published public var lifes: Int
 
 	private var sudoku: Sudoku?
+	private let difficulty: Difficulty
 
 	public init(difficulty: Difficulty) {
+		Logger.entering("BoardData.<init>", difficulty)
+		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
-		Logger.debug("Generating sudoku puzzle")
-		sudoku = SudokuGenerator.generate(level: difficulty)
+		lifes = 3
+	}
+
+	public func resetBoard() {
+		lifes = 3
+		for i in 0...80 {
+			colors[i] = .black
+			values[i] = 0
+		}
+	}
+
+	public func isInitialized() -> Bool {
+		return sudoku != nil
+	}
+
+	public func generatePuzzle() {
+		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
+		sudoku = nil
+		repeat {
+			sudoku = SudokuGenerator.generate(level: difficulty)
+		} while (sudoku == nil)
 		values = sudoku?.puzzle ?? ArrayUtil.array81(initial: 0)
-		Logger.debug("values: \(values)")
+		//Logger.debug("values: \(values)")
 	}
 
 	public func valueAt(index: Int) -> Int {
@@ -28,6 +51,10 @@ class BoardData: ObservableObject {
 
 	public func valueAt(row: Int, col: Int) -> Int {
 		return values[row * 9 + col]
+	}
+
+	public func answerAt(index: Int) -> Int {
+		return sudoku!.answer[index]
 	}
 
 	public func canChange(index: Int) -> Bool {
@@ -43,6 +70,8 @@ class BoardData: ObservableObject {
 				if (sudoku!.answer[i] != values[i]) {
 					colors[i] = .red
 					valid = false
+				} else if (canChange(index: i)) {
+					colors[i] = .green
 				}
 			}
 		}

@@ -8,7 +8,7 @@
 import Foundation
 
 enum Holes: Int {
-	case CONST_EASY_HOLES = 3, //40,
+	case CONST_EASY_HOLES = 40,
 	CONST_MEDIUM_HOLES = 45,
 	CONST_HARD_HOLES = 50,
 	CONST_EXPERT_HOLES = 56,
@@ -37,11 +37,13 @@ class SudokuGenerator {
 
 		do {
 			let basicSudoku = try Sudoku(puzzle: generateSimplePuzzle())
-			Logger.debug("basic sudoku: \(basicSudoku.puzzle)")
+			//Logger.debug("basic sudoku: \(basicSudoku.puzzle)")
+			Logger.debug("Basic sudoku and answer generated.")
 
 			// the dig hole process 
 			var maxDigHoleProcessTimes = 3
 			var resultSudoku: Sudoku? = nil
+			Logger.debug("Digging holes...")
 			repeat {
 				resultSudoku = digHoles(basicSudoku: basicSudoku, holes: maxHoles.rawValue)
 				maxDigHoleProcessTimes -= 1
