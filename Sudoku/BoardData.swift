@@ -12,19 +12,21 @@ class BoardData: ObservableObject {
 	@Published public var values: [Int]
 	@Published public var colors: [Color] = Array(repeating: .black, count: 81)
 	@Published public var lifes: Int
+	@Published public var quit: Bool
 
 	private var sudoku: Sudoku?
-	private let difficulty: Difficulty
+	public var difficulty: Difficulty
 
 	public init(difficulty: Difficulty) {
 		Logger.entering("BoardData.<init>", difficulty)
 		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
 		lifes = 3
+		quit = false
 	}
 
 	public func resetBoard() {
-		lifes = 3
+		quit = false
 		for i in 0...80 {
 			colors[i] = .black
 			values[i] = 0
@@ -36,6 +38,7 @@ class BoardData: ObservableObject {
 	}
 
 	public func generatePuzzle() {
+		lifes = 3
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
 		sudoku = nil
 		repeat {

@@ -12,7 +12,9 @@ enum Difficulty {
 }
 
 struct NewGameView: View {
+	@Environment(\.dismiss) private var dismiss
 	@State var difficulty: Difficulty = Difficulty.medium
+	var boardData = BoardData(difficulty: .medium)
 
 	var body: some View {
 		NavigationView {
@@ -26,6 +28,7 @@ struct NewGameView: View {
 					HStack(spacing: 10) {
 						Button(action: {
 							difficulty = .easy
+							boardData.difficulty = difficulty
 							Logger.debug("difficult is now: \(difficulty)")
 						}) {
 							Text("Easy")
@@ -36,6 +39,7 @@ struct NewGameView: View {
 						}
 						Button(action: {
 							difficulty = .medium
+							boardData.difficulty = difficulty
 							Logger.debug("difficult is now: \(difficulty)")
 						}) {
 							Text("Medium")
@@ -48,6 +52,7 @@ struct NewGameView: View {
 					HStack(spacing: 10) {
 						Button(action: {
 							difficulty = .hard
+							boardData.difficulty = difficulty
 							Logger.debug("difficult is now: \(difficulty)")
 						}) {
 							Text("Hard")
@@ -58,6 +63,7 @@ struct NewGameView: View {
 						}
 						Button(action: {
 							difficulty = .expert
+							boardData.difficulty = difficulty
 							Logger.debug("difficult is now: \(difficulty)")
 						}) {
 							Text("Expert")
@@ -68,18 +74,30 @@ struct NewGameView: View {
 						}
 					}.padding(.horizontal)
 				}
-
 				Button(action: { Logger.debug("starting new game") }) {
 					NavigationLink {
 						BoardView(newGame: true)
-							.environmentObject(BoardData(difficulty: difficulty))
+							.environmentObject(boardData)
 							//.navigationBarBackButtonHidden(true)
+							.onDisappear {
+								Logger.debug("NewGameView.BoardView.onDisappear triggered.")
+								if (boardData.quit) {
+									Logger.debug("Value of boardData.quit is true. Dismissing NewGameView.")
+									dismiss()
+								}
+							}
 					} label: {
 						Text("Start")
 							.frame(minWidth: 150, minHeight: 30)
 							.padding(.all, 10)
 							.border(.black, width: 1)
 					}
+					.onChange(of: boardData.quit, perform: { quit in
+						Logger.debug("NewGameView.onChange triggered. Quit changed to: \(boardData.quit)")
+						if (quit) {
+							dismiss()
+						}
+					})
 				}
 			}
 		}

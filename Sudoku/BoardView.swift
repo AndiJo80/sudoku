@@ -107,7 +107,6 @@ struct Cell: View {
 				if (selected.id != boardData.answerAt(index: cellIdx)) {
 					boardData.lifes = boardData.lifes - 1
 				}
-				
 			}
 			Logger.debug("Solved: \(solved)")
 		}
@@ -296,7 +295,8 @@ struct BoardView: View {
 	@State private var gameOver = false
 
 	@Environment(\.scenePhase) private var scenePhase
-	@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+	//@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+	@Environment(\.dismiss) private var dismiss
 
 	init(newGame: Bool) {
 		self.newGame = newGame
@@ -338,10 +338,10 @@ struct BoardView: View {
 			boardData.generatePuzzle()
 		})
 		.onDisappear(perform: {
-			Logger.debug("onDisappear triggered")
+			Logger.debug("BoardView.onDisappear triggered")
 		})
-		.onChange(of: scenePhase, perform: { value in
-			Logger.debug("onChange triggered")
+		.onChange(of: scenePhase, perform: { scenePhaseValue in // DEBUG code to try out stuff
+			Logger.debug("BoardView.onChange triggered. scenePhase changed to \(scenePhase)")
 			switch scenePhase {
 				case .active:
 					print("Active")
@@ -354,16 +354,16 @@ struct BoardView: View {
 			}
 		})
 		.onChange(of: boardData.lifes, perform: { lifes in
-			Logger.debug("Lifes changed to: \(lifes)")
+			Logger.debug("BoardView.onChange triggered. Lifes changed to: \(lifes)")
 			if (lifes <= 0) {
 				gameOver = true
-				// TODO
-				//self.presentationMode.wrappedValue.dismiss()
 			}
 		})
 		.alert("Game Over", isPresented: $gameOver) {
 			Button("OK") {
-				self.presentationMode.wrappedValue.dismiss()
+				boardData.quit = true
+				//self.presentationMode.wrappedValue.dismiss()
+				dismiss()
 			}
 		} message: {
 			Text("You lost all lifes. Final Score is: 0")
