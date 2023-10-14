@@ -335,7 +335,10 @@ struct BoardView: View {
 		.onAppear(perform: {
 			Logger.debug("onAppear triggered")
 			boardData.resetBoard()
-			boardData.generatePuzzle()
+			if (newGame) {
+				boardData.generatePuzzle()
+			}
+			boardData.prepareBoard()
 		})
 		.onDisappear(perform: {
 			Logger.debug("BoardView.onDisappear triggered")

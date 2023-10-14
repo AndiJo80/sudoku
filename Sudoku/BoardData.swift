@@ -38,14 +38,16 @@ class BoardData: ObservableObject {
 	}
 
 	public func generatePuzzle() {
-		lifes = 3
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
+		lifes = 3
 		sudoku = nil
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
 		} while (sudoku == nil)
+	}
+	
+	public func prepareBoard() {
 		values = sudoku?.puzzle ?? ArrayUtil.array81(initial: 0)
-		//Logger.debug("values: \(values)")
 	}
 
 	public func valueAt(index: Int) -> Int {
