@@ -8,13 +8,31 @@
 import Foundation
 import SwiftUI
 
+/*class SaveData1 {
+	var values: [Int]
+	var lifes: Int
+	var puzzle: [Int]
+	var answer: [Int]
+	var score: Int
+	var playTime: Int
+
+	public init(puzzle: [Int], answer: [Int], values: [Int], lifes: Int, score: Int, playTime: Int) {
+		self.puzzle = puzzle
+		self.answer = answer
+		self.values = values
+		self.lifes = lifes
+		self.score = score
+		self.playTime = playTime
+	}
+}*/
+
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
 	@Published public var colors: [Color] = Array(repeating: .black, count: 81)
 	@Published public var lifes: Int
 	@Published public var quit: Bool
 
-	private var sudoku: Sudoku?
+	private(set) var sudoku: Sudoku?
 	public var difficulty: Difficulty
 
 	public init(difficulty: Difficulty) {
@@ -27,10 +45,12 @@ class BoardData: ObservableObject {
 
 	public func resetBoard() {
 		quit = false
-		for i in 0...80 {
+		colors = Array(repeating: .black, count: 81)
+		values = Array(repeating: 0, count: 81)
+		/*for i in 0...80 {
 			colors[i] = .black
 			values[i] = 0
-		}
+		}*/
 	}
 
 	public func isInitialized() -> Bool {
@@ -40,14 +60,50 @@ class BoardData: ObservableObject {
 	public func generatePuzzle() {
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
 		lifes = 3
-		sudoku = nil
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
 		} while (sudoku == nil)
+		values = sudoku!.puzzle
 	}
-	
+
+	public func generatePuzzle(saveData: SaveData) throws {
+		Logger.debug("Generating sudoku puzzle from saved data")
+		guard let saveDataPuzzle = saveData.puzzle,
+			  let saveDataAnswer = saveData.answer,
+			  let saveDataValues = saveData.values,
+			  let saveDataDifficulty = Difficulty(rawValue: Int(saveData.difficulty)) else {
+			Logger.error("Invalid save data.")
+			quit = true
+			throw SaveDataError(.invalidData, "Invalid save data.")
+		}
+		quit = false
+		lifes = max(1, Int(saveData.lifes))
+		let puzzle = SudokuUtil.convertToArray(dataString: saveDataPuzzle)
+		let answer = SudokuUtil.convertToArray(dataString: saveDataAnswer)
+		sudoku = Sudoku(puzzle: puzzle, answer: answer)
+		values = SudokuUtil.convertToArray(dataString: saveDataValues)
+		self.difficulty = saveDataDifficulty
+		/*for i in 0...80 {
+			if (values[i] < 1 || !canChange(index: i)) {
+				colors[i] = .black
+			} else if (values[i] == sudoku?.answer[i] ) {
+				colors[i] = .green
+			} else {
+				colors[i] = .red
+			}
+		}*/
+	}
+
 	public func prepareBoard() {
-		values = sudoku?.puzzle ?? ArrayUtil.array81(initial: 0)
+		for i in 0...80 {
+			if (values[i] < 1 || !canChange(index: i)) {
+				colors[i] = .black
+			} else if (values[i] == sudoku?.answer[i] ) {
+				colors[i] = .green
+			} else {
+				colors[i] = .red
+			}
+		}
 	}
 
 	public func valueAt(index: Int) -> Int {

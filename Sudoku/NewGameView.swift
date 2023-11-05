@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-enum Difficulty {
-	case easy, medium, hard, expert, hell
+enum Difficulty : Int {
+	case easy = 0, medium = 1, hard = 2, expert = 3, hell = 4
 }
 
 struct NewGameView: View {

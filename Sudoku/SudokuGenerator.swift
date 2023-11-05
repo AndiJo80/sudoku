@@ -43,7 +43,7 @@ class SudokuGenerator {
 			// the dig hole process 
 			var maxDigHoleProcessTimes = 3
 			var resultSudoku: Sudoku? = nil
-			Logger.debug("Digging holes...")
+			Logger.debug("Digging \(maxHoles.rawValue) holes...")
 			repeat {
 				resultSudoku = digHoles(basicSudoku: basicSudoku, holes: maxHoles.rawValue)
 				maxDigHoleProcessTimes -= 1

@@ -16,6 +16,7 @@ struct SudokuApp: App {
             /*ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)*/
 			MainMenuView()
+				.environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
