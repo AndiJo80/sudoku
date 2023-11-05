@@ -43,7 +43,7 @@ class SudokuGenerator {
 			// the dig hole process 
 			var maxDigHoleProcessTimes = 3
 			var resultSudoku: Sudoku? = nil
-			Logger.debug("Digging holes...")
+			Logger.debug("Digging \(maxHoles.rawValue) holes...")
 			repeat {
 				resultSudoku = digHoles(basicSudoku: basicSudoku, holes: maxHoles.rawValue)
 				maxDigHoleProcessTimes -= 1
@@ -51,8 +51,12 @@ class SudokuGenerator {
 
 			Logger.debug("Returning result sudoku: \(resultSudoku?.puzzle ?? [0])")
 			return resultSudoku
+		} catch SudokuError.moreThanOneSolve {
+			Logger.error("Cannot generate Sudoku. Puzzle is not one-solution sudoku (has more than 1 solutions).")
+		} catch SudokuError.puzzleCantSolve {
+			Logger.error("Cannot generate Sudoku. Puzzle can't solve")
 		} catch {
-			Logger.error("Cannot generate Sudoku")
+			Logger.error("Cannot generate Sudoku. \(error)")
 		}
 		return nil
 	}

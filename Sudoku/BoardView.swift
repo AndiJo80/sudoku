@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct Row: View {
 	private let rowIdx: Int
@@ -293,10 +294,12 @@ struct BoardView: View {
 	@StateObject private var clearButton = ClearButton()
 	@EnvironmentObject private var boardData: BoardData
 	@State private var gameOver = false
+	@State private var showingSaveQuitAlert = false
 
 	@Environment(\.scenePhase) private var scenePhase
 	//@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@Environment(\.dismiss) private var dismiss
+	@Environment(\.managedObjectContext) private var viewContext
 
 	init(newGame: Bool) {
 		self.newGame = newGame
@@ -332,10 +335,56 @@ struct BoardView: View {
 			 .font(namedFont.font)
 			 }*/
 		}
+		.toolbar(content: {
+			Button(action: {
+				Logger.debug("pressed on toolbar button Save&Quit")
+				showingSaveQuitAlert = true
+			}) {
+				Text("Save&Quit")
+			}
+			.alert("Save & Quit", isPresented: $showingSaveQuitAlert) {
+				Button("Yes") {
+					Logger.debug("yes pressed on Save&Quit dialog")
+
+					if let oldSaveData = try? viewContext.fetch(NSFetchRequest<SaveData>(entityName: SaveData.entity().managedObjectClassName)) {
+						for d in oldSaveData {
+							viewContext.delete(d)
+						}
+					}
+
+					let saveData = SaveData(context: viewContext)
+					saveData.values = SudokuUtil.convertToString(numberArr: boardData.values)
+					saveData.score = 1000
+					saveData.puzzle = SudokuUtil.convertToString(numberArr: boardData.sudoku!.puzzle)
+					saveData.playTime = 10*60 // 10 minutes
+					saveData.answer = SudokuUtil.convertToString(numberArr: boardData.sudoku!.answer)
+					saveData.lifes = Int32(boardData.lifes)
+					saveData.savedAt = Date.now
+					saveData.difficulty = Int16(boardData.difficulty.rawValue)
+
+					do {
+						try viewContext.save()
+					} catch {
+						// Replace this implementation with code to handle the error appropriately.
+						// fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+						let nsError = error as NSError
+						Logger.error("Cannot save game: \(nsError), \(nsError.userInfo)")
+					}
+
+					boardData.quit = true
+					dismiss()
+				}
+				Button("No") {
+					Logger.debug("no pressed on Save&Quit dialog")
+				}
+			} message: {
+				Text("Save and return to Main Menu? You can continue this game later.")
+			}
+		})
 		.onAppear(perform: {
-			Logger.debug("onAppear triggered")
-			boardData.resetBoard()
+			Logger.debug("BoardView.onAppear triggered")
 			if (newGame) {
+				boardData.resetBoard()
 				boardData.generatePuzzle()
 			}
 			boardData.prepareBoard()
@@ -378,5 +427,6 @@ struct BoardView_Previews: PreviewProvider {
     static var previews: some View {
 		BoardView(newGame: true)
 			.environmentObject(BoardData(difficulty: .medium))
+			.environment(\.managedObjectContext, PersistenceController.previewSaveData.container.viewContext)
     }
 }

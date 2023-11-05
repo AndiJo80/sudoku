@@ -64,6 +64,11 @@ public class Sudoku {
 		try calculate()
 	}
 
+	init(puzzle: [Int], answer: [Int]) {
+		self.puzzle = puzzle
+		self.answer = answer
+	}
+
 	private func calculate() throws {
 		guard let firstCheckPoint = answer.firstIndex(where: { $0 == -1 }) else {
 			return
@@ -72,19 +77,19 @@ public class Sudoku {
 		if isOneSolutionMode {
 			let solved = try dsfOneSolutionCalculate(index: firstCheckPoint)
 			if (finishes > 1) {
-				throw SudokuError("puzzle is not one-solution sudoku")
+				throw SudokuError.moreThanOneSolve//("puzzle is not one-solution sudoku")
 			}
 			if (!solved || answer.contains { $0 == -1 }) {
-				throw SudokuError("puzzle can't solve")
+				throw SudokuError.puzzleCantSolve//("puzzle can't solve")
 			}
 			/*if (finishes == 0) {
-				throw SudokuError("puzzle can't solve")
+				throw SudokuError.puzzleCantSolve//("puzzle can't solve")
 			}*/
 			return
 		}
 
 		if try !backtrackCalculate(index: firstCheckPoint) {
-			throw SudokuError("puzzle can't solve")
+			throw SudokuError.puzzleCantSolve//("puzzle can't solve")
 		}
 	}
 
@@ -156,17 +161,15 @@ public class Sudoku {
 	}
 }
 
-public class SudokuError: Error {
-	public let error: String
-
-	init(_ error: String) {
-		self.error = error
-	}
+public enum SudokuError: Error {
+	 case puzzleCantSolve,
+		  moreThanOneSolve
 }
-/*enum SudokuError: Error {
-	 case puzzleCantSolve
-	 case moreThanOneSolve
-}*/
+
+public enum SaveDataError: Error {
+	case noSaveData,
+		 invalidData(String)
+}
 
 public struct Location {
 	var row: Int
@@ -206,7 +209,24 @@ public class SudokuUtil {
 	}
 
 	public static func shuffleNumbers() -> [Int] {
-		let shuffleNums: [Int] = Array(0...8).shuffled() // [0, 1, 2, 3, 4, 5, 6, 7, 8].shuffled()
+		let shuffleNums: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8].shuffled() // Array(0...8).shuffled()
 		return shuffleNums
+	}
+
+	public static func convertToString(numberArr: [Int]) -> String {
+		let dataString = numberArr.map { ($0 < 0) ? "-" : String($0) }.joined()
+		return dataString
+	}
+
+	public static func convertToArray(dataString: String) -> [Int] {
+		let numberArr = dataString.map { ($0 == "-") ? -1 : ($0.wholeNumberValue ?? -1) }
+		return numberArr
+
+		// convert String to [Int]
+		// see: https://stackoverflow.com/a/28611698/14952324
+		// Swift 5.2 or later can use "Key Path Expressions as Functions"
+		//    -> use code \.wholeNumberValue instead of $0.wholeNumberValue
+		// more info: https://github.com/apple/swift-evolution/blob/main/proposals/0249-key-path-literal-function-expressions.md
+		//let digits = dataString.compactMap(\.wholeNumberValue) // -> digits is Array<Int> -> [1, 2, 3, 4, 5, 6, 7, 8, 9]
 	}
 }

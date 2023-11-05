@@ -10,6 +10,9 @@ import CoreData
 struct PersistenceController {
     static let shared = PersistenceController()
 
+	/**
+	 * This is only test code and should be deleted.
+	 */
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
@@ -27,6 +30,32 @@ struct PersistenceController {
         }
         return result
     }()
+
+	static var previewSaveData: PersistenceController = {
+		let result = PersistenceController(inMemory: true)
+		let viewContext = result.container.viewContext
+
+		let testSudoku = SudokuGenerator.generate(level: .easy)!
+
+		let saveData = SaveData(context: viewContext)
+		saveData.values = SudokuUtil.convertToString(numberArr: testSudoku.puzzle)
+		saveData.score = 1000
+		saveData.puzzle = SudokuUtil.convertToString(numberArr: testSudoku.puzzle)
+		saveData.playTime = 10*60 // 10 minutes
+		saveData.answer = SudokuUtil.convertToString(numberArr: testSudoku.answer)
+		saveData.lifes = 2
+		saveData.savedAt = Date.now
+
+		do {
+			try viewContext.save()
+		} catch {
+			// Replace this implementation with code to handle the error appropriately.
+			// fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+			let nsError = error as NSError
+			fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+		}
+		return result
+	}()
 
     let container: NSPersistentContainer
 

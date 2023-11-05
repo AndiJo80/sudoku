@@ -15,6 +15,10 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
         animation: .default)
     private var items: FetchedResults<Item>
+	/*@FetchRequest(
+		sortDescriptors: [NSSortDescriptor(keyPath: \SaveData.savedAt, ascending: true)],
+		animation: .default)
+	private var data: FetchedResults<SaveData>*/
 
     var body: some View {
         NavigationView {

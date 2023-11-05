@@ -29,8 +29,17 @@ class NavigationPath: ObservableObject {
 }
 
 struct MainMenuView: View {
+	@Environment(\.managedObjectContext) private var viewContext
+	@FetchRequest(
+		sortDescriptors: [NSSortDescriptor(keyPath: \SaveData.savedAt, ascending: false)],
+		animation: .default)
+	private var data: FetchedResults<SaveData>
+
 	//@State private var navigationPath = NavigationPath()
 	//@State private var path: [String] = []
+
+	//@State private var presentMe = false
+	@State private var isNavigateToContinue = false
 
 	var body: some View {
 		NavigationStack {
@@ -52,18 +61,56 @@ struct MainMenuView: View {
 						}
 					}
 
-					Button(action: { Logger.debug("continue running game") }) {
-						let boardData = BoardData(difficulty: .medium)
-						NavigationLink {
-							BoardView(newGame: false)
-								.environmentObject(boardData)
+					let boardData = BoardData(difficulty: .medium)
+					/*NavigationLink {
+						BoardView(newGame: false)
+							.environmentObject(boardData)
+					} label: {
+						Text("Continue")
+							.frame(minWidth: 150, minHeight: 30)
+							.padding(.all, 10)
+							.border(.black, width: 1)
+					}
+					.simultaneousGesture(TapGesture().onEnded{
+						print("Hello world tap!")
+					})
+					.simultaneousGesture(LongPressGesture().onEnded {val in
+						print("Hello world long press! \(val)")
+					})
+					.disabled(false)*/
+					NavigationLink(destination: EmptyView()) {
+						Button {
+							// run your code before the navigation to the new view (BoardView)
+							Logger.debug("Continue saved game...")
+							// then set
+							do {
+								guard let saveData = data.first else {
+									throw SaveDataError.noSaveData
+								}
+
+								// build the board data with the loaded savegame
+								Logger.debug("Save data: \(saveData)")
+								try boardData.generatePuzzle(saveData: saveData)
+								boardData.prepareBoard()
+								isNavigateToContinue = true
+							} catch SaveDataError.invalidData(let details) {
+								Logger.error("Cannot continue game because save data has errors. Empty value for \(details)")
+							} catch SaveDataError.noSaveData {
+								Logger.error("Cannot continue game because no save data exists.")
+							} catch {
+								Logger.error("Cannot continue game. \(error)")
+							}
 						} label: {
 							Text("Continue")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
 								.border(.black, width: 1)
+						}.navigationDestination(isPresented: $isNavigateToContinue) {
+							BoardView(newGame: false)
+								.environmentObject(boardData)
 						}
-					}.disabled(false)
+					}
+					.disabled(data.isEmpty)
 
 					Button(action: { Logger.debug("showing highscore") }) {
 						NavigationLink {
@@ -105,13 +152,24 @@ struct MainMenuView: View {
 					}.disabled(true)
 				}
 			}
+		}.onAppear {
+			viewContext.refreshAllObjects()
 		}
+	}
+}
+
+struct ColorDetail: View {
+	var color: Color
+
+	var body: some View {
+		color.navigationTitle(color.description)
 	}
 }
 
 struct MainMenuView_Previews: PreviewProvider {
     static var previews: some View {
         MainMenuView()
+			.environment(\.managedObjectContext, PersistenceController.previewSaveData.container.viewContext)
     }
 }
 
