@@ -8,28 +8,11 @@
 import Foundation
 import SwiftUI
 
-/*class SaveData1 {
-	var values: [Int]
-	var lifes: Int
-	var puzzle: [Int]
-	var answer: [Int]
-	var score: Int
-	var playTime: Int
-
-	public init(puzzle: [Int], answer: [Int], values: [Int], lifes: Int, score: Int, playTime: Int) {
-		self.puzzle = puzzle
-		self.answer = answer
-		self.values = values
-		self.lifes = lifes
-		self.score = score
-		self.playTime = playTime
-	}
-}*/
-
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
 	@Published public var colors: [Color] = Array(repeating: .black, count: 81)
 	@Published public var lifes: Int
+	@Published public var score: Int
 	@Published public var quit: Bool
 
 	private(set) var sudoku: Sudoku?
@@ -40,6 +23,7 @@ class BoardData: ObservableObject {
 		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
 		lifes = 3
+		score = 0
 		quit = false
 	}
 
@@ -60,6 +44,7 @@ class BoardData: ObservableObject {
 	public func generatePuzzle() {
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
 		lifes = 3
+		score = 0
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
 		} while (sudoku == nil)
@@ -87,6 +72,7 @@ class BoardData: ObservableObject {
 		}
 		quit = false
 		lifes = max(1, Int(saveData.lifes))
+		score = max(0, Int(saveData.score))
 		let puzzle = SudokuUtil.convertToArray(dataString: saveDataPuzzle)
 		let answer = SudokuUtil.convertToArray(dataString: saveDataAnswer)
 		sudoku = Sudoku(puzzle: puzzle, answer: answer)
@@ -148,8 +134,11 @@ class BoardData: ObservableObject {
 		return valid
 	}
 
-	@discardableResult
 	public func isSolved() -> Bool {
 		return (!values.contains { $0 < 1 }) // values should not contain any entry smaller than 1
+	}
+	
+	public func isCorrectValue(index: Int) -> Bool {
+		return (values[index] == sudoku!.answer[index])
 	}
 }

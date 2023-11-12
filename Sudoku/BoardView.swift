@@ -81,19 +81,26 @@ struct Cell: View {
 	}
 
 	private func onCellTab() {
-		Logger.debug("old cell value: \(cellText)")
 		if (!boardData.canChange(index: cellIdx)) {
 			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
 			return
 		}
 
 		if (clearButton.selected) {
-			Logger.debug("Tapped cell")
+			Logger.debug("Tapped cell \(cellIdx) with Clear selected")
+			Logger.debug("old cell value: \(cellText)")
+
+			// decrese score if clearing a cell with a correct value
+			if (boardData.isCorrectValue(index: cellIdx)) {
+				boardData.score -= 100
+			}
+
 			cellText = " "
 			boardData.values[cellIdx] = -1;
 			boardData.validate()
 		} else if let selected = inputNumbersList.getSelected() {
-			Logger.debug("Tapped cell")
+			Logger.debug("Tapped cell \(cellIdx) with \(selected.id) selected")
+			Logger.debug("old cell value: \(cellText)")
 			cellText = String(selected.id)
 			boardData.values[cellIdx] = selected.id;
 
@@ -101,7 +108,14 @@ struct Cell: View {
 			var solved = false
 			if (isValid) {
 				Logger.debug("Puzzle is valid")
+				// increse score if the cell now has a correct value
+				boardData.score += 100
+				// check if puzzle is solved
 				solved = boardData.isSolved()
+				if (solved) {
+					// calculate final score before ending the game
+					boardData.score += 1000 * (1 + boardData.difficulty.rawValue) + boardData.lifes * 500
+				}
 			} else {
 				Logger.debug("Puzzle is not valid")
 
@@ -295,6 +309,7 @@ struct BoardView: View {
 	@EnvironmentObject private var boardData: BoardData
 	@State private var gameOver = false
 	@State private var showingSaveQuitAlert = false
+	@State private var gameWon = false
 
 	@Environment(\.scenePhase) private var scenePhase
 	//@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -307,6 +322,10 @@ struct BoardView: View {
 
 	var body: some View {
 		VStack {
+			HStack(spacing: 10) {
+				Text("Lives: \(boardData.lifes)")
+				Text("Score: \(boardData.score)")
+			}
 			VStack (alignment: .center, spacing: -4) {
 				rows[0]
 				rows[1]
@@ -359,6 +378,7 @@ struct BoardView: View {
 					saveData.playTime = 10*60 // 10 minutes
 					saveData.answer = SudokuUtil.convertToString(numberArr: boardData.sudoku!.answer)
 					saveData.lifes = Int32(boardData.lifes)
+					saveData.score = Int32(boardData.score)
 					saveData.savedAt = Date.now
 					saveData.difficulty = Int16(boardData.difficulty.rawValue)
 
@@ -411,14 +431,44 @@ struct BoardView: View {
 				gameOver = true
 			}
 		})
+		.onChange(of: boardData.score, perform: { score in
+			Logger.debug("BoardView.onChange triggered. Score changed to: \(score)")
+			if (boardData.isSolved()) {
+				gameWon = true
+			}
+		})
 		.alert("Game Over", isPresented: $gameOver) {
+			Button("OK") {
+				// delete old save data
+				if let oldSaveData = try? viewContext.fetch(NSFetchRequest<SaveData>(entityName: SaveData.entity().managedObjectClassName)) {
+					for d in oldSaveData {
+						viewContext.delete(d)
+					}
+					do {
+						try viewContext.save()
+					} catch {
+						// Replace this implementation with code to handle the error appropriately.
+						// fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+						let nsError = error as NSError
+						Logger.error("Cannot save game: \(nsError), \(nsError.userInfo)")
+					}
+				}
+
+				boardData.quit = true
+				//self.presentationMode.wrappedValue.dismiss()
+				dismiss()
+			}
+		} message: {
+			Text("You lost all lifes. Final Score is: \(boardData.score)")
+		}
+		.alert("Game Won", isPresented: $gameWon) {
 			Button("OK") {
 				boardData.quit = true
 				//self.presentationMode.wrappedValue.dismiss()
 				dismiss()
 			}
 		} message: {
-			Text("You lost all lifes. Final Score is: 0")
+			Text("Congratulations. You solved the puzzle. Final Score is: \(boardData.score)")
 		}
 	}
 }
