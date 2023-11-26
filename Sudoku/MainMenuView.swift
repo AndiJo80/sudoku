@@ -64,22 +64,6 @@ struct MainMenuView: View {
 					}
 
 					let boardData = BoardData(difficulty: .medium)
-					/*NavigationLink {
-						BoardView(newGame: false)
-							.environmentObject(boardData)
-					} label: {
-						Text("Continue")
-							.frame(minWidth: 150, minHeight: 30)
-							.padding(.all, 10)
-							.border(.black, width: 1)
-					}
-					.simultaneousGesture(TapGesture().onEnded{
-						print("Hello world tap!")
-					})
-					.simultaneousGesture(LongPressGesture().onEnded {val in
-						print("Hello world long press! \(val)")
-					})
-					.disabled(false)*/
 					NavigationLink(destination: EmptyView()) {
 						Button {
 							// run your code before the navigation to the new view (BoardView)
@@ -150,12 +134,6 @@ struct MainMenuView: View {
 						}
 					}
 
-					/*Button(action: { Logger.debug("showing settings") }) {
-						Text("Settings")
-							.frame(minWidth: 150, minHeight: 30)
-							.padding(.all, 10)
-							.border(.black, width: 1)
-					}*/
 					NavigationLink(destination: EmptyView()) {
 						Button {
 							// run your code before the navigation to the new view (BoardView)
