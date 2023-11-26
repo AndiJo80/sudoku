@@ -21,6 +21,8 @@
 		878585222A3DDF590063C9E3 /* NewGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585212A3DDF590063C9E3 /* NewGameView.swift */; };
 		878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585252A3F3B940063C9E3 /* ColorExtension.swift */; };
 		878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585272A471CD30063C9E3 /* TimerTestView.swift */; };
+		87C28B802B12122800F6E5F7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C28B7F2B12122800F6E5F7 /* SettingsView.swift */; };
+		87CD8DC42B13672F00E96FEB /* ViewUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CD8DC32B13672F00E96FEB /* ViewUtil.swift */; };
 		87E530D42AA4C62D004059E8 /* NavigationStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E530D32AA4C62D004059E8 /* NavigationStackView.swift */; };
 		87E79F742A0FE17600B6AE73 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 87E79F732A0FE17600B6AE73 /* README.md */; };
 		87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E79F762A111BC600B6AE73 /* MainMenuView.swift */; };
@@ -50,6 +52,8 @@
 		878585212A3DDF590063C9E3 /* NewGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameView.swift; sourceTree = "<group>"; };
 		878585252A3F3B940063C9E3 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		878585272A471CD30063C9E3 /* TimerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTestView.swift; sourceTree = "<group>"; };
+		87C28B7F2B12122800F6E5F7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		87CD8DC32B13672F00E96FEB /* ViewUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewUtil.swift; sourceTree = "<group>"; };
 		87E530D32AA4C62D004059E8 /* NavigationStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackView.swift; sourceTree = "<group>"; };
 		87E79F732A0FE17600B6AE73 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		87E79F762A111BC600B6AE73 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
@@ -100,11 +104,12 @@
 				87F1212A29EAAFA9008FD529 /* BoardView.swift */,
 				87E79F762A111BC600B6AE73 /* MainMenuView.swift */,
 				878585212A3DDF590063C9E3 /* NewGameView.swift */,
-				876400F42A5048A800D3398E /* BoardData.swift */,
+				87C28B7F2B12122800F6E5F7 /* SettingsView.swift */,
 				874B7ABA29E42841001BFE31 /* Assets.xcassets */,
-				874B7ABF29E42841001BFE31 /* Persistence.swift */,
 				874B7AC129E42841001BFE31 /* Sudoku.xcdatamodeld */,
 				874B7ABC29E42841001BFE31 /* Preview Content */,
+				876400F42A5048A800D3398E /* BoardData.swift */,
+				874B7ABF29E42841001BFE31 /* Persistence.swift */,
 				873CFC8C2A7FCBF6000A88C3 /* Sudoku.swift */,
 				872975722A88E43600748E76 /* SudokuGenerator.swift */,
 			);
@@ -142,6 +147,7 @@
 				87E79F782A111C3A00B6AE73 /* NamedFont.swift */,
 				878585252A3F3B940063C9E3 /* ColorExtension.swift */,
 				872975702A87B29400748E76 /* ArrayUtil.swift */,
+				87CD8DC32B13672F00E96FEB /* ViewUtil.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -174,7 +180,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					874B7AB229E4283B001BFE31 = {
 						CreatedOnToolsVersion = 14.3;
@@ -218,6 +224,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				872975712A87B29400748E76 /* ArrayUtil.swift in Sources */,
+				87C28B802B12122800F6E5F7 /* SettingsView.swift in Sources */,
+				87CD8DC42B13672F00E96FEB /* ViewUtil.swift in Sources */,
 				87F1213729EAB032008FD529 /* Localizer.swift in Sources */,
 				874B7AC029E42841001BFE31 /* Persistence.swift in Sources */,
 				878585222A3DDF590063C9E3 /* NewGameView.swift in Sources */,
@@ -281,6 +289,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -341,6 +350,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

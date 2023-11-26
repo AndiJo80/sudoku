@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HighscoreEntry {
+/*struct HighscoreEntry1 {
 	var name: String
 	var score: Int
 	
@@ -18,11 +18,11 @@ struct HighscoreEntry {
 }
 
 fileprivate let highscores = [
-	HighscoreEntry("Andi", 100),
-	HighscoreEntry("Hugo", 80),
-	HighscoreEntry("Egon", 50),
-	HighscoreEntry("Dummy", 10)
-]
+	HighscoreEntry1("Andi", 100),
+	HighscoreEntry1("Hugo", 80),
+	HighscoreEntry1("Egon", 50),
+	HighscoreEntry1("Dummy", 10)
+]*/
 
 class NavigationPath: ObservableObject {
 	@Published var path: [String] = []
@@ -33,13 +33,17 @@ struct MainMenuView: View {
 	@FetchRequest(
 		sortDescriptors: [NSSortDescriptor(keyPath: \SaveData.savedAt, ascending: false)],
 		animation: .default)
-	private var data: FetchedResults<SaveData>
+	private var savegameData: FetchedResults<SaveData>
+	@FetchRequest(
+		sortDescriptors: [NSSortDescriptor(keyPath: \HighscoreEntry.score, ascending: false)],
+		animation: .default)
+	private var highscores: FetchedResults<HighscoreEntry>
 
 	//@State private var navigationPath = NavigationPath()
 	//@State private var path: [String] = []
 
-	//@State private var presentMe = false
 	@State private var isNavigateToContinue = false
+	@State var isNavigateToSettings = false
 
 	var body: some View {
 		NavigationStack {
@@ -48,9 +52,7 @@ struct MainMenuView: View {
 					.font(.title)
 
 				VStack (alignment: .center, spacing: 40) {
-					Button(action: {
-						Logger.debug("starting new game")
-					}) {
+					Button(action: { Logger.debug("starting new game") }) {
 						NavigationLink {
 							NewGameView()
 						} label: {
@@ -84,7 +86,7 @@ struct MainMenuView: View {
 							Logger.debug("Continue saved game...")
 							// then set
 							do {
-								guard let saveData = data.first else {
+								guard let saveData = savegameData.first else {
 									throw SaveDataError.noSaveData
 								}
 
@@ -110,7 +112,7 @@ struct MainMenuView: View {
 								.environmentObject(boardData)
 						}
 					}
-					.disabled(data.isEmpty)
+					.disabled(savegameData.isEmpty)
 
 					Button(action: { Logger.debug("showing highscore") }) {
 						NavigationLink {
@@ -118,7 +120,7 @@ struct MainMenuView: View {
 							VStack(alignment: .center, spacing: 150) {
 								Text("Highscore")
 									.font(.title)
-								
+
 								// render highscore list
 								VStack(alignment: .crossAlignment, spacing: 10) {
 									HStack() {
@@ -129,12 +131,16 @@ struct MainMenuView: View {
 									}
 									ForEach(0..<highscores.count, id: \.self) { idx in
 										HStack() {
-											Text(highscores[idx].name)
+											Text(highscores[idx].name ?? "Anonymous")
 											Text("\(highscores[idx].score)").alignmentGuide(.crossAlignment,
 																							computeValue: { d in d[HorizontalAlignment.leading] })
 										}
 									}
-								}
+								}.visibility(highscores.isEmpty ? .gone : .visible)
+								VStack(alignment: .center) {
+									Text("Highscore is still empty.")
+									Text("Play the game and fill the list.")
+								}.visibility(highscores.isEmpty ? .visible : .gone)
 							}
 						} label: {
 							Text("Highscore")
@@ -144,12 +150,26 @@ struct MainMenuView: View {
 						}
 					}
 
-					Button(action: { Logger.debug("showing settings") }) {
+					/*Button(action: { Logger.debug("showing settings") }) {
 						Text("Settings")
 							.frame(minWidth: 150, minHeight: 30)
 							.padding(.all, 10)
 							.border(.black, width: 1)
-					}.disabled(true)
+					}*/
+					NavigationLink(destination: EmptyView()) {
+						Button {
+							// run your code before the navigation to the new view (BoardView)
+							Logger.debug("Showing Settings...")
+							isNavigateToSettings = true
+						} label: {
+							Text("Settings")
+								.frame(minWidth: 150, minHeight: 30)
+								.padding(.all, 10)
+								.border(.black, width: 1)
+						}.navigationDestination(isPresented: $isNavigateToSettings) {
+							SettingsView()
+						}
+					}
 				}
 			}
 		}.onAppear {
@@ -158,20 +178,20 @@ struct MainMenuView: View {
 	}
 }
 
-struct ColorDetail: View {
+struct MainMenuView_Previews: PreviewProvider {
+	static var previews: some View {
+		MainMenuView()
+			.environment(\.managedObjectContext, PersistenceController.previewSudokuGameData.container.viewContext)
+	}
+}
+
+/*struct ColorDetail: View {
 	var color: Color
 
 	var body: some View {
 		color.navigationTitle(color.description)
 	}
-}
-
-struct MainMenuView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainMenuView()
-			.environment(\.managedObjectContext, PersistenceController.previewSaveData.container.viewContext)
-    }
-}
+}*/
 
 extension HorizontalAlignment {
 	private enum CrossAlignment : AlignmentID {
