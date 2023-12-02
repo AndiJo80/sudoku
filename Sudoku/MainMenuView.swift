@@ -7,23 +7,6 @@
 
 import SwiftUI
 
-/*struct HighscoreEntry1 {
-	var name: String
-	var score: Int
-	
-	init(_ name: String, _ score: Int) {
-		self.name = name
-		self.score = score
-	}
-}
-
-fileprivate let highscores = [
-	HighscoreEntry1("Andi", 100),
-	HighscoreEntry1("Hugo", 80),
-	HighscoreEntry1("Egon", 50),
-	HighscoreEntry1("Dummy", 10)
-]*/
-
 class NavigationPath: ObservableObject {
 	@Published var path: [String] = []
 }
@@ -52,6 +35,7 @@ struct MainMenuView: View {
 					.font(.title)
 
 				VStack (alignment: .center, spacing: 40) {
+					//MARK: New Game button
 					Button(action: { Logger.debug("starting new game") }) {
 						NavigationLink {
 							NewGameView()
@@ -63,6 +47,7 @@ struct MainMenuView: View {
 						}
 					}
 
+					//MARK: Continue button
 					let boardData = BoardData(difficulty: .medium)
 					NavigationLink(destination: EmptyView()) {
 						Button {
@@ -98,6 +83,7 @@ struct MainMenuView: View {
 					}
 					.disabled(savegameData.isEmpty)
 
+					//MARK: Highscore button
 					Button(action: { Logger.debug("showing highscore") }) {
 						NavigationLink {
 							// Highscore View
@@ -134,6 +120,7 @@ struct MainMenuView: View {
 						}
 					}
 
+					//MARK: Settings button
 					NavigationLink(destination: EmptyView()) {
 						Button {
 							// run your code before the navigation to the new view (BoardView)

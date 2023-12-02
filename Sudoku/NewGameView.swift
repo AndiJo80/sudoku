@@ -23,6 +23,7 @@ struct NewGameView: View {
 					.font(.title)
 
 				VStack (alignment: .center, spacing: 20) {
+					//MARK: difficulty buttons
 					Text("Difficulty")
 						.font(.title)
 					HStack(spacing: 10) {
@@ -74,6 +75,7 @@ struct NewGameView: View {
 						}
 					}.padding(.horizontal)
 				}
+				//MARK: Start button
 				Button(action: { Logger.debug("starting new game") }) {
 					NavigationLink {
 						BoardView(newGame: true)

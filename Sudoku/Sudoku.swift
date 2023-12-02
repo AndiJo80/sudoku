@@ -7,6 +7,7 @@
 
 import Foundation
 
+//MARK: class Sudoku
 public class Sudoku {
 	private(set) var puzzle: [Int] = ArrayUtil.array81(initial: -1)
 	private(set) var answer: [Int] = ArrayUtil.array81(initial: -1)
@@ -178,6 +179,7 @@ public struct Location {
 	var index: Int
 }
 
+//MARK: class SudokuUtil
 public class SudokuUtil {
 
 	private init() {}

@@ -16,6 +16,9 @@ enum Holes: Int {
 	CONST_HELL_HOLES = 60
 }
 
+/*
+ * Generate a Sudoku puzzle according to the difficulty
+ */
 class SudokuGenerator {
 
 	private init() {}

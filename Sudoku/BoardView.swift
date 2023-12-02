@@ -37,6 +37,7 @@ struct Row: View {
 	}
 }
 
+//MARK: class Cell
 struct Cell: View {
 	var foregroundColor: Color
 	private let borderWidth: CGFloat
@@ -80,6 +81,7 @@ struct Cell: View {
 		cellText = (boardDataValue > 0) ? String(boardDataValue) : " "
 	}
 
+	//MARK: onCellTab() event handler
 	private func onCellTab() {
 		if (!boardData.canChange(index: cellIdx)) {
 			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
@@ -147,6 +149,7 @@ struct Cell: View {
 	}
 }
 
+//MARK: struct Quadrant
 struct Quadrant: View {
 	private let quadrantIdx: Int // global quadrant number 0-9
 	private var borderWidth: CGFloat
@@ -210,6 +213,7 @@ struct Quadrant: View {
 	}
 }
 
+//MARK: class InputNumbersList
 class InputNumbersList: ObservableObject {
 	@Published var inputNumbersList : [InputNumber]
 
@@ -224,6 +228,7 @@ class InputNumbersList: ObservableObject {
 	}
 }
 
+//MARK: class InputNumber
 class InputNumber: Identifiable {
 	public var id: Int
 	public var bgColor: Color = Color.clear /* ---debug code--- {
@@ -275,6 +280,7 @@ private struct InputNumberView: View {
 	}
 }
 
+//MARK: class ClearButton
 class ClearButton: ObservableObject {
 	@Published public var bgColor: Color = Color.clear /* ---debug code--- {
 		didSet { Logger.debug("new bgColor for clear button: \(bgColor)") }
@@ -306,6 +312,7 @@ private struct ClearButtonView: View {
 	}
 }
 
+//MARK: class BoardView
 struct BoardView: View {
 	//let dismiss: DismissAction
 	private var newGame: Bool
@@ -335,6 +342,9 @@ struct BoardView: View {
 		self.newGame = newGame
 	}
 
+	/*
+	 * Save the game
+	 */
 	private func saveGame() {
 		if let oldSaveData = try? viewContext.fetch(NSFetchRequest<SaveData>(entityName: SaveData.entity().managedObjectClassName)) {
 			for d in oldSaveData {
@@ -363,6 +373,9 @@ struct BoardView: View {
 		}
 	}
 
+	/*
+	 * Save highscore list. Make sure that there are max. 10 entries in the list.
+	 */
 	private func saveHighScore(name: String? = nil) {
 		let score = boardData.score
 		Logger.entering("saveHighScore()", score, name)
@@ -379,7 +392,7 @@ struct BoardView: View {
 			playerName = "Anonymous"
 		}
 
-		// do before return
+		// do before return - save changes to persistence
 		defer {
 			do {
 				if (viewContext.hasChanges) {
@@ -420,8 +433,6 @@ struct BoardView: View {
 		let highScoreEntry = HighscoreEntry(context: viewContext)
 		highScoreEntry.name = playerName
 		highScoreEntry.score = Int32(score)
-
-		
 	}
 
 	var body: some View {
