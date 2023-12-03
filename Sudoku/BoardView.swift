@@ -33,7 +33,7 @@ struct Row: View {
 			quadrants[0]
 			quadrants[1]
 			quadrants[2]
-		}.border(.black, width: borderWidth)
+		}.border(.foreground, width: borderWidth)
 	}
 }
 
@@ -59,7 +59,7 @@ struct Cell: View {
 		ZStack(alignment: .center) {
 			cellCanvas
 				.foregroundColor(foregroundColor)
-				.border(.black, width: borderWidth)
+				.border(.foreground, width: borderWidth)
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
@@ -209,7 +209,7 @@ struct Quadrant: View {
 				cells[2][1]
 				cells[2][2]
 			}
-		}.border(.black, width: borderWidth)
+		}.border(.foreground, width: borderWidth)
 	}
 }
 
@@ -268,7 +268,7 @@ private struct InputNumberView: View {
 		Text(String(inputNumber.id))
 			.padding(10)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
-			.border(.black, width: 1)
+			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped \(inputNumber.id)")
 				for inputNumber in inputNumbersList.inputNumbersList {
@@ -298,7 +298,7 @@ private struct ClearButtonView: View {
 		Text("Clear")
 			.padding(10)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
-			.border(.black, width: 1)
+			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped Clear")
 				for inputNumber in inputNumbersList.inputNumbersList {
@@ -340,6 +340,23 @@ struct BoardView: View {
 
 	init(newGame: Bool) {
 		self.newGame = newGame
+	}
+
+	private func deleteSaveGame() {
+		// delete old save data
+		if let oldSaveData = try? viewContext.fetch(NSFetchRequest<SaveData>(entityName: SaveData.entity().managedObjectClassName)) {
+			for d in oldSaveData {
+				viewContext.delete(d)
+			}
+			do {
+				try viewContext.save()
+			} catch {
+				// Replace this implementation with code to handle the error appropriately.
+				// fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+				let nsError = error as NSError
+				Logger.error("Cannot save game: \(nsError), \(nsError.userInfo)")
+			}
+		}
 	}
 
 	/*
@@ -493,6 +510,7 @@ struct BoardView: View {
 			}
 		})
 		.onAppear(perform: {
+			//MARK: prepare boardData to play the game
 			Logger.debug("BoardView.onAppear triggered")
 			if (newGame) {
 				boardData.resetBoard()
@@ -523,30 +541,16 @@ struct BoardView: View {
 				saveHighScore()
 			}
 		})
-
 		.onChange(of: boardData.score, perform: { score in
 			Logger.debug("BoardView.onChange triggered. Score changed to: \(score)")
 			if (boardData.isSolved()) {
 				gameWon = true
-				saveHighScore()
 			}
 		})
 		.alert("Game Over", isPresented: $gameOver) {
 			Button("OK") {
 				// delete old save data
-				if let oldSaveData = try? viewContext.fetch(NSFetchRequest<SaveData>(entityName: SaveData.entity().managedObjectClassName)) {
-					for d in oldSaveData {
-						viewContext.delete(d)
-					}
-					do {
-						try viewContext.save()
-					} catch {
-						// Replace this implementation with code to handle the error appropriately.
-						// fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-						let nsError = error as NSError
-						Logger.error("Cannot save game: \(nsError), \(nsError.userInfo)")
-					}
-				}
+				deleteSaveGame()
 
 				boardData.quit = true
 				//self.presentationMode.wrappedValue.dismiss()
@@ -557,6 +561,12 @@ struct BoardView: View {
 		}
 		.alert("Game Won", isPresented: $gameWon) {
 			Button("OK") {
+				// delete old save data
+				deleteSaveGame()
+
+				// save highscore
+				saveHighScore()
+
 				boardData.quit = true
 				//self.presentationMode.wrappedValue.dismiss()
 				dismiss()

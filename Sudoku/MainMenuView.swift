@@ -43,7 +43,7 @@ struct MainMenuView: View {
 							Text("New Game")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 					}
 
@@ -75,7 +75,7 @@ struct MainMenuView: View {
 							Text("Continue")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}.navigationDestination(isPresented: $isNavigateToContinue) {
 							BoardView(newGame: false)
 								.environmentObject(boardData)
@@ -116,7 +116,7 @@ struct MainMenuView: View {
 							Text("Highscore")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 					}
 
@@ -130,7 +130,7 @@ struct MainMenuView: View {
 							Text("Settings")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}.navigationDestination(isPresented: $isNavigateToSettings) {
 							SettingsView()
 						}

@@ -36,7 +36,7 @@ struct NewGameView: View {
 								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
 								.padding(.all, 10)
 								.background((difficulty == .easy) ? Color.selectedButtonColor : Color.clear)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 						Button(action: {
 							difficulty = .medium
@@ -47,7 +47,7 @@ struct NewGameView: View {
 								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
 								.padding(.all, 10)
 								.background((difficulty == .medium) ? Color.selectedButtonColor : Color.clear)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 					}.padding(.horizontal)
 					HStack(spacing: 10) {
@@ -60,7 +60,7 @@ struct NewGameView: View {
 								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
 								.padding(.all, 10)
 								.background((difficulty == .hard) ? Color.selectedButtonColor : Color.clear)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 						Button(action: {
 							difficulty = .expert
@@ -71,7 +71,7 @@ struct NewGameView: View {
 								.frame(minWidth: 0, maxWidth: .infinity, minHeight: 30)
 								.padding(.all, 10)
 								.background((difficulty == .expert) ? Color.selectedButtonColor : Color.clear)
-								.border(.black, width: 1)
+								.border(.foreground, width: 1)
 						}
 					}.padding(.horizontal)
 				}
@@ -92,7 +92,7 @@ struct NewGameView: View {
 						Text("Start")
 							.frame(minWidth: 150, minHeight: 30)
 							.padding(.all, 10)
-							.border(.black, width: 1)
+							.border(.foreground, width: 1)
 					}
 					.onChange(of: boardData.quit, perform: { quit in
 						Logger.debug("NewGameView.onChange triggered. Quit changed to: \(boardData.quit)")

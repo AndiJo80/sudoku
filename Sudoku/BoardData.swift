@@ -10,7 +10,7 @@ import SwiftUI
 
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
-	@Published public var colors: [Color] = Array(repeating: .black, count: 81)
+	@Published public var colors: [Color] = Array(repeating: .primary, count: 81)
 	@Published public var lifes: Int
 	@Published public var score: Int
 	@Published public var quit: Bool
@@ -22,17 +22,17 @@ class BoardData: ObservableObject {
 		Logger.entering("BoardData.<init>", difficulty)
 		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
-		lifes = 3
+		lifes = (difficulty == .easy) ? 5 : 3
 		score = 0
 		quit = false
 	}
 
 	public func resetBoard() {
 		quit = false
-		colors = Array(repeating: .black, count: 81)
+		colors = Array(repeating: .primary, count: 81)
 		values = Array(repeating: 0, count: 81)
 		/*for i in 0...80 {
-			colors[i] = .black
+			colors[i] = .primary
 			values[i] = 0
 		}*/
 	}
@@ -43,7 +43,7 @@ class BoardData: ObservableObject {
 
 	public func generatePuzzle() {
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
-		lifes = 3
+		lifes = (difficulty == .easy) ? 5 : 3
 		score = 0
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
@@ -80,7 +80,7 @@ class BoardData: ObservableObject {
 		self.difficulty = saveDataDifficulty
 		/*for i in 0...80 {
 			if (values[i] < 1 || !canChange(index: i)) {
-				colors[i] = .black
+				colors[i] = .primary
 			} else if (values[i] == sudoku?.answer[i] ) {
 				colors[i] = .green
 			} else {
@@ -92,7 +92,7 @@ class BoardData: ObservableObject {
 	public func prepareBoard() {
 		for i in 0...80 {
 			if (values[i] < 1 || !canChange(index: i)) {
-				colors[i] = .black
+				colors[i] = .primary
 			} else if (values[i] == sudoku?.answer[i] ) {
 				colors[i] = .green
 			} else {
@@ -121,7 +121,7 @@ class BoardData: ObservableObject {
 	public func validate() -> Bool {
 		var valid = true
 		for i in 0...80 {
-			colors[i] = .black
+			colors[i] = .primary
 			if (values[i] > 0) {
 				if (sudoku!.answer[i] != values[i]) {
 					colors[i] = .red

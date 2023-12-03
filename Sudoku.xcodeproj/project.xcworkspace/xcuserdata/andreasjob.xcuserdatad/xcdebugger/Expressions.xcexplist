@@ -5,5 +5,13 @@
       <ContextState
          contextName = "closure #1 in closure #3 in closure #1 in closure #1 in closure #1 in MainMenuView.body.getter:MainMenuView.swift">
       </ContextState>
+      <ContextState
+         contextName = "closure #7 in BoardView.body.getter:BoardView.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "gameWon">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
    </ContextStates>
 </VariablesViewState>
