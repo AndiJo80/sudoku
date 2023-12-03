@@ -135,10 +135,30 @@ class BoardData: ObservableObject {
 	}
 
 	public func isSolved() -> Bool {
-		return (!values.contains { $0 < 1 }) // values should not contain any entry smaller than 1
+		if (values.contains { $0 < 1 }) { // values should not contain any entry smaller than 1
+			return false
+		}
+		for i in 0...80 {
+			if (!isCorrectValue(index: i)) {
+				return false
+			}
+		}
+		return true
 	}
-	
+
 	public func isCorrectValue(index: Int) -> Bool {
 		return (values[index] == sudoku!.answer[index])
+	}
+
+	public func countOccurences(of searchValue: Int) -> Int {
+		var count = 0
+		for i in 0...80 {
+			let boardVal = values[i]
+			if (boardVal == searchValue && isCorrectValue(index: i)) {
+				count+=1
+			}
+		}
+		//Logger.debug("Number \(searchValue) appears \(count) times")
+		return count
 	}
 }
