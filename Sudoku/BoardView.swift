@@ -109,7 +109,7 @@ struct Cell: View {
 			let oldBoardValue = boardData.values[cellIdx]
 			let oldValueWasCorrect = boardData.isCorrectValue(index: cellIdx)
 			boardData.values[cellIdx] = newBoardValue;
-			
+
 			if (oldBoardValue != newBoardValue) {
 				if (boardData.isCorrectValue(index: cellIdx)) {
 					// increase score if the cell now has a correct value
@@ -263,6 +263,7 @@ private struct InputNumberView: View {
 	@EnvironmentObject var inputNumbersList: InputNumbersList
 	@EnvironmentObject var clearButton: ClearButton
 	//let board: BoardView
+	@EnvironmentObject private var boardData: BoardData
 
 	var body: some View {
 		Text(String(inputNumber.id))
@@ -270,13 +271,24 @@ private struct InputNumberView: View {
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
 			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
-				print("Tapped \(inputNumber.id)")
+				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
+					Logger.debug("Do not allow to select \(inputNumber.id)")
+					return
+				}
+				Logger.debug("Tapped \(inputNumber.id)")
 				for inputNumber in inputNumbersList.inputNumbersList {
 					inputNumber.selected = (inputNumber.id == self.inputNumber.id)
 				}
 				clearButton.selected = false
 			})
 			.background(bgColor)
+			.foregroundStyle((boardData.countOccurences(of: inputNumber.id) < 9) ? Color.primary : Color.gray)
+			.onChange(of: boardData.score, perform: { _ in
+				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
+					inputNumber.selected = false
+					bgColor = .clear
+				}
+			})
 	}
 }
 
