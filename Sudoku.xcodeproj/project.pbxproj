@@ -23,6 +23,7 @@
 		878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 878585272A471CD30063C9E3 /* TimerTestView.swift */; };
 		87C28B802B12122800F6E5F7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C28B7F2B12122800F6E5F7 /* SettingsView.swift */; };
 		87CD8DC42B13672F00E96FEB /* ViewUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CD8DC32B13672F00E96FEB /* ViewUtil.swift */; };
+		87CDBB512B25E8F5006E50A6 /* SwiftUIInputAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87CDBB502B25E8F5006E50A6 /* SwiftUIInputAlert.swift */; };
 		87E530D42AA4C62D004059E8 /* NavigationStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E530D32AA4C62D004059E8 /* NavigationStackView.swift */; };
 		87E79F742A0FE17600B6AE73 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 87E79F732A0FE17600B6AE73 /* README.md */; };
 		87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87E79F762A111BC600B6AE73 /* MainMenuView.swift */; };
@@ -54,6 +55,7 @@
 		878585272A471CD30063C9E3 /* TimerTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerTestView.swift; sourceTree = "<group>"; };
 		87C28B7F2B12122800F6E5F7 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		87CD8DC32B13672F00E96FEB /* ViewUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewUtil.swift; sourceTree = "<group>"; };
+		87CDBB502B25E8F5006E50A6 /* SwiftUIInputAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIInputAlert.swift; sourceTree = "<group>"; };
 		87E530D32AA4C62D004059E8 /* NavigationStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStackView.swift; sourceTree = "<group>"; };
 		87E79F732A0FE17600B6AE73 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		87E79F762A111BC600B6AE73 /* MainMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuView.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				878585272A471CD30063C9E3 /* TimerTestView.swift */,
 				87E530D32AA4C62D004059E8 /* NavigationStackView.swift */,
 				8758E4382AB5A910000EFC9F /* NavigationTestView.swift */,
+				87CDBB502B25E8F5006E50A6 /* SwiftUIInputAlert.swift */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */,
 				878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */,
 				8758E4392AB5A911000EFC9F /* NavigationTestView.swift in Sources */,
+				87CDBB512B25E8F5006E50A6 /* SwiftUIInputAlert.swift in Sources */,
 				87F1213629EAB032008FD529 /* LanguageSettings.swift in Sources */,
 				87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */,
 				873CFC8D2A7FCBF6000A88C3 /* Sudoku.swift in Sources */,
@@ -398,7 +402,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -431,7 +435,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
