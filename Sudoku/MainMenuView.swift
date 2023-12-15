@@ -143,11 +143,9 @@ struct MainMenuView: View {
 	}
 }
 
-struct MainMenuView_Previews: PreviewProvider {
-	static var previews: some View {
-		MainMenuView()
-			.environment(\.managedObjectContext, PersistenceController.previewSudokuGameData.container.viewContext)
-	}
+#Preview {
+	MainMenuView()
+		.environment(\.managedObjectContext, PersistenceController.previewSudokuGameData.container.viewContext)
 }
 
 /*struct ColorDetail: View {

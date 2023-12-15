@@ -60,6 +60,7 @@ struct Cell: View {
 			cellCanvas
 				.foregroundColor(foregroundColor)
 				.border(.foreground, width: borderWidth)
+				.background(Color.blue)
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
@@ -349,6 +350,7 @@ struct BoardView: View {
 	//@Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 	@Environment(\.dismiss) private var dismiss
 	@Environment(\.managedObjectContext) private var viewContext
+	@AppStorage("userName") private var userName = "Anonymous"
 
 	init(newGame: Bool) {
 		self.newGame = newGame
@@ -471,9 +473,9 @@ struct BoardView: View {
 				Text("Score: \(boardData.score)")
 			}
 			VStack (alignment: .center, spacing: -4) {
-				rows[0]
-				rows[1]
-				rows[2]
+				rows[0].zIndex(0)
+				rows[1].zIndex(1) // Top layer.
+				rows[2].zIndex(0)
 			}
 			.padding(10)
 			.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
@@ -550,7 +552,7 @@ struct BoardView: View {
 			Logger.debug("BoardView.onChange triggered. Lifes changed to: \(lifes)")
 			if (lifes <= 0) {
 				gameOver = true
-				saveHighScore()
+				saveHighScore(name: userName)
 			}
 		})
 		.onChange(of: boardData.score, perform: { score in
@@ -577,7 +579,7 @@ struct BoardView: View {
 				deleteSaveGame()
 
 				// save highscore
-				saveHighScore()
+				saveHighScore(name: userName)
 
 				boardData.quit = true
 				//self.presentationMode.wrappedValue.dismiss()
@@ -589,10 +591,8 @@ struct BoardView: View {
 	}
 }
 
-struct BoardView_Previews: PreviewProvider {
-	static var previews: some View {
-		BoardView(newGame: true)
-			.environmentObject(BoardData(difficulty: .medium))
-			.environment(\.managedObjectContext, PersistenceController.previewSudokuGameData.container.viewContext)
-	}
+#Preview {
+	BoardView(newGame: true)
+		.environmentObject(BoardData(difficulty: .medium))
+		.environment(\.managedObjectContext, PersistenceController.previewSudokuGameData.container.viewContext)
 }
