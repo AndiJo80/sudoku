@@ -19,6 +19,7 @@ enum Holes: Int {
 /*
  * Generate a Sudoku puzzle according to the difficulty
  */
+//MARK: class SudokuGenerator
 class SudokuGenerator {
 
 	private init() {}

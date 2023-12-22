@@ -210,6 +210,20 @@ public class SudokuUtil {
 		return indexes
 	}
 
+	public static func indexFor(row: Int, col: Int) -> Int {
+		return row * 9 + col
+	}
+
+	public static func indexesFor(row: Int) -> [Int] {
+		let indicesInRow = (0...8).map { row * 9 + $0 }
+		return indicesInRow
+	}
+
+	public static func indexesFor(col: Int) -> [Int] {
+		let indicesInRow = (0...8).map { $0 * 9 + col }
+		return indicesInRow
+	}
+
 	public static func shuffleNumbers() -> [Int] {
 		let shuffleNums: [Int] = [0, 1, 2, 3, 4, 5, 6, 7, 8].shuffled() // Array(0...8).shuffled()
 		return shuffleNums

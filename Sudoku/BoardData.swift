@@ -14,6 +14,8 @@ class BoardData: ObservableObject {
 	@Published public var lifes: Int
 	@Published public var score: Int
 	@Published public var quit: Bool
+	@Published public var bgColors: [Color] = Array(repeating: .clear, count: 81)
+	@Published public var selectedCellIdx: Int = -1
 
 	private(set) var sudoku: Sudoku?
 	public var difficulty: Difficulty
@@ -31,6 +33,8 @@ class BoardData: ObservableObject {
 		quit = false
 		colors = Array(repeating: .primary, count: 81)
 		values = Array(repeating: 0, count: 81)
+		bgColors = Array(repeating: .clear, count: 81)
+		selectedCellIdx = -1
 		/*for i in 0...80 {
 			colors[i] = .primary
 			values[i] = 0
@@ -90,11 +94,13 @@ class BoardData: ObservableObject {
 	}
 
 	public func prepareBoard() {
+		bgColors = Array(repeating: .clear, count: 81)
+		selectedCellIdx = -1
 		for i in 0...80 {
 			if (values[i] < 1 || !canChange(index: i)) {
 				colors[i] = .primary
 			} else if (values[i] == sudoku?.answer[i] ) {
-				colors[i] = .green
+				colors[i] = .blue
 			} else {
 				colors[i] = .red
 			}
@@ -127,7 +133,7 @@ class BoardData: ObservableObject {
 					colors[i] = .red
 					valid = false
 				} else if (canChange(index: i)) {
-					colors[i] = .green
+					colors[i] = .blue
 				}
 			}
 		}
@@ -160,5 +166,23 @@ class BoardData: ObservableObject {
 		}
 		//Logger.debug("Number \(searchValue) appears \(count) times")
 		return count
+	}
+
+	public func updateBgColors() {
+		let myValue = valueAt(index: selectedCellIdx)
+		let myLocation = SudokuUtil.location(index: selectedCellIdx)
+		for i in 0...80 {
+			let currentLocation = SudokuUtil.location(index: i)
+			if (   currentLocation.zone == myLocation.zone
+				|| currentLocation.col == myLocation.col
+				|| currentLocation.row == myLocation.row) {
+				bgColors[i] = .highlightedCellColor
+			} else if (myValue > 0 && valueAt(index: i) == myValue) {
+				bgColors[i] = .highlightedCellColor2
+			} else {
+				bgColors[i] = .clear
+			}
+		}
+		bgColors[selectedCellIdx] = .selectedCellColor
 	}
 }

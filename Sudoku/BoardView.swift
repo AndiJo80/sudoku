@@ -8,10 +8,12 @@
 import SwiftUI
 import CoreData
 
+//MARK: struct Row
 struct Row: View {
 	private let rowIdx: Int
 	private let borderWidth: CGFloat
 	private let quadrants: [Quadrant]
+	var parent: BoardView? = nil
 
 	@inlinable public init(rowIdx: Int, border width: CGFloat) {
 		self.rowIdx = rowIdx
@@ -37,19 +39,19 @@ struct Row: View {
 	}
 }
 
-//MARK: class Cell
+//MARK: struct Cell
 struct Cell: View {
-	var foregroundColor: Color
+	@State var backgroundColor: Color = Color.clear
 	private let borderWidth: CGFloat
 	private let cellIdx: Int // global quadrant number 0-81
 	@State var cellText = " "
+
 	@EnvironmentObject private var inputNumbersList: InputNumbersList
 	@EnvironmentObject private var clearButton: ClearButton
 	@EnvironmentObject private var boardData: BoardData
 
 	@inlinable public init(cellIdx: Int, border: CGFloat, color: Color) {
 		borderWidth = border
-		foregroundColor = color
 		self.cellIdx = cellIdx
 	}
 
@@ -58,9 +60,9 @@ struct Cell: View {
 	var body: some View {
 		ZStack(alignment: .center) {
 			cellCanvas
-				.foregroundColor(foregroundColor)
+				.foregroundColor(.clear)
 				.border(.foreground, width: borderWidth)
-				.background(Color.blue)
+				.background(boardData.bgColors[cellIdx])
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
@@ -82,67 +84,10 @@ struct Cell: View {
 		cellText = (boardDataValue > 0) ? String(boardDataValue) : " "
 	}
 
-	//MARK: onCellTab() event handler
+	//MARK: onCellTab() event handler - old
 	private func onCellTab() {
-		if (!boardData.canChange(index: cellIdx)) {
-			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
-			return
-		}
-
-		if (clearButton.selected) {
-			Logger.debug("Tapped cell \(cellIdx) with Clear selected")
-			Logger.debug("old cell value: \(cellText)")
-
-			// decrease score if clearing a cell with a correct value
-			if (boardData.isCorrectValue(index: cellIdx)) {
-				boardData.score -= 100
-				Logger.debug("decreasing score to \(boardData.score)")
-			}
-
-			cellText = " "
-			boardData.values[cellIdx] = -1;
-			boardData.validate()
-		} else if let selected = inputNumbersList.getSelected() {
-			Logger.debug("Tapped cell \(cellIdx) with \(selected.id) selected")
-			Logger.debug("old cell value: \(cellText)")
-			let newBoardValue = selected.id
-			cellText = String(newBoardValue)
-			let oldBoardValue = boardData.values[cellIdx]
-			let oldValueWasCorrect = boardData.isCorrectValue(index: cellIdx)
-			boardData.values[cellIdx] = newBoardValue;
-
-			if (oldBoardValue != newBoardValue) {
-				if (boardData.isCorrectValue(index: cellIdx)) {
-					// increase score if the cell now has a correct value
-					boardData.score += 100
-					Logger.debug("increasing score to \(boardData.score)")
-				} else if (oldValueWasCorrect) {
-					// a correct value (green) was replaced with a wrong value (red) -> decrease score
-					boardData.score -= 100
-					Logger.debug("decreasing score to \(boardData.score)")
-				}
-			}
-
-			let isValid = boardData.validate()
-			var solved = false
-			if (isValid) {
-				Logger.debug("Puzzle is valid")
-				// check if puzzle is solved
-				solved = boardData.isSolved()
-				if (solved) {
-					// calculate final score before ending the game
-					boardData.score += 1000 * (1 + boardData.difficulty.rawValue) + boardData.lifes * 500
-					Logger.debug("Solved. Increasing score to \(boardData.score)")
-				}
-			} else {
-				Logger.debug("Puzzle is not valid")
-
-				if (newBoardValue != boardData.answerAt(index: cellIdx)) {
-					boardData.lifes = boardData.lifes - 1
-				}
-			}
-			Logger.debug("Solved: \(solved)")
-		}
+		boardData.selectedCellIdx = cellIdx
+		boardData.updateBgColors()
 	}
 
 	public func setValue(_ newVal: String) {
@@ -154,8 +99,6 @@ struct Cell: View {
 struct Quadrant: View {
 	private let quadrantIdx: Int // global quadrant number 0-9
 	private var borderWidth: CGFloat
-
-	//private let cells = Array(repeating: Array(repeating: Cell(border: 1, color: .clear), count: 3), count: 3)
 	private let cells: [[Cell]]
 
 	@inlinable public init(quadrantIdx: Int, border: CGFloat) {
@@ -176,20 +119,10 @@ struct Quadrant: View {
 			cells.append(rowCells)
 		}
 		self.cells = cells
-
-		/*cells = [[Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear)],
-				 [Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear)],
-				 [Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear),
-				  Cell(cellIdx: 0, border: 1, color: .clear)]]*/
 	}
 
 	public func cellAt(row: Int, col: Int) -> Cell? {
-		Logger.entering("cellAt()", row, col)
+		//Logger.entering("cellAt()", row, col)
 		return (row < 3 && col < 3) ? cells[row][col] : nil
 	}
 
@@ -221,12 +154,6 @@ class InputNumbersList: ObservableObject {
 	init(inputNumbersList: [InputNumber]) {
 		self.inputNumbersList = inputNumbersList
 	}
-
-	public func getSelected() -> InputNumber? {
-		return inputNumbersList.first {
-			$0.selected
-		}
-	}
 }
 
 //MARK: class InputNumber
@@ -235,9 +162,6 @@ class InputNumber: Identifiable {
 	public var bgColor: Color = Color.clear /* ---debug code--- {
 		didSet { Logger.debug("new bgColor for InputNumber \(id): \(bgColor)") }
 	}*/
-	public var selected = false {
-		didSet { if (selected) { /* ---debug code--- Logger.debug("selected InputNumber: \(id)");*/ bgColor = .blue; } else { bgColor = .clear } }
-	}
 
 	init(_ id: Int) {
 		self.id = id
@@ -258,12 +182,12 @@ class InputNumber: Identifiable {
 	}
 }
 
+//MARK: struct InputNumberView
 private struct InputNumberView: View {
 	@Binding var inputNumber: InputNumber
 	@Binding var bgColor: Color
 	@EnvironmentObject var inputNumbersList: InputNumbersList
 	@EnvironmentObject var clearButton: ClearButton
-	//let board: BoardView
 	@EnvironmentObject private var boardData: BoardData
 
 	var body: some View {
@@ -277,19 +201,69 @@ private struct InputNumberView: View {
 					return
 				}
 				Logger.debug("Tapped \(inputNumber.id)")
-				for inputNumber in inputNumbersList.inputNumbersList {
-					inputNumber.selected = (inputNumber.id == self.inputNumber.id)
-				}
-				clearButton.selected = false
+				onInputNumberTab()
 			})
 			.background(bgColor)
+			.padding(.horizontal, 1)
 			.foregroundStyle((boardData.countOccurences(of: inputNumber.id) < 9) ? Color.primary : Color.gray)
 			.onChange(of: boardData.score, perform: { _ in
 				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
-					inputNumber.selected = false
 					bgColor = .clear
 				}
 			})
+	}
+
+	private func onInputNumberTab() {
+		let cellIdx = boardData.selectedCellIdx
+		if (cellIdx < 0 || cellIdx > 80) {
+			Logger.debug("No cell selected.")
+			return;
+		}
+		if (!boardData.canChange(index: cellIdx)) {
+			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
+			return
+		}
+
+		Logger.debug("Tapped input number \(inputNumber.id) with cell \(cellIdx) selected")
+		let newBoardValue = inputNumber.id
+		let oldBoardValue = boardData.values[cellIdx]
+		let oldValueWasCorrect = boardData.isCorrectValue(index: cellIdx)
+		boardData.values[cellIdx] = newBoardValue;
+		Logger.debug("old cell value: \(oldBoardValue)")
+
+		boardData.updateBgColors()
+
+		if (oldBoardValue != newBoardValue) {
+			if (boardData.isCorrectValue(index: cellIdx)) {
+				// increase score if the cell now has a correct value
+				boardData.score += 100
+				Logger.debug("increasing score to \(boardData.score)")
+			} else if (oldValueWasCorrect) {
+				// a correct value (green) was replaced with a wrong value (red) -> decrease score
+				boardData.score -= 100
+				Logger.debug("decreasing score to \(boardData.score)")
+			}
+		}
+
+		let isValid = boardData.validate()
+		var solved = false
+		if (isValid) {
+			Logger.debug("Puzzle is valid")
+			// check if puzzle is solved
+			solved = boardData.isSolved()
+			if (solved) {
+				// calculate final score before ending the game
+				boardData.score += 1000 * (1 + boardData.difficulty.rawValue) + boardData.lifes * 500
+				Logger.debug("Solved. Increasing score to \(boardData.score)")
+			}
+		} else {
+			Logger.debug("Puzzle is not valid")
+
+			if (newBoardValue != boardData.answerAt(index: cellIdx)) {
+				boardData.lifes = boardData.lifes - 1
+			}
+		}
+		Logger.debug("Solved: \(solved)")
 	}
 }
 
@@ -298,14 +272,13 @@ class ClearButton: ObservableObject {
 	@Published public var bgColor: Color = Color.clear /* ---debug code--- {
 		didSet { Logger.debug("new bgColor for clear button: \(bgColor)") }
 	}*/
-	@Published public var selected = false {
-		didSet { if (selected) { /* ---debug code--- Logger.debug("selected clear button");*/ bgColor = .blue; } else { bgColor = .clear } }
-	}
 }
 
+//MARK: struct ClearButtonView
 private struct ClearButtonView: View {
 	@EnvironmentObject var clearButton: ClearButton
 	@EnvironmentObject var inputNumbersList: InputNumbersList
+	@EnvironmentObject var boardData: BoardData
 
 	var body: some View {
 		Text("Clear")
@@ -314,18 +287,37 @@ private struct ClearButtonView: View {
 			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped Clear")
-				for inputNumber in inputNumbersList.inputNumbersList {
-					inputNumber.bgColor = .clear
-					inputNumber.selected = false
-				}
-				clearButton.selected = true
-				clearButton.bgColor = .blue
+				onClearButtonTab()
 			})
 			.background(clearButton.bgColor)
 	}
+
+	//MARK: onClearButtonTab() event handler
+	private func onClearButtonTab() {
+		let cellIdx = boardData.selectedCellIdx
+		if (cellIdx < 0 || cellIdx > 80) {
+			Logger.debug("No cell selected.")
+			return;
+		}
+		if (!boardData.canChange(index: cellIdx)) {
+			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
+			return
+		}
+
+		// decrease score if clearing a cell with a correct value
+		if (boardData.isCorrectValue(index: cellIdx)) {
+			boardData.score -= 100
+			Logger.debug("decreasing score to \(boardData.score)")
+		}
+
+		boardData.values[cellIdx] = -1
+		boardData.validate()
+
+		boardData.updateBgColors()
+	 }
 }
 
-//MARK: class BoardView
+//MARK: struct BoardView
 struct BoardView: View {
 	//let dismiss: DismissAction
 	private var newGame: Bool
@@ -337,6 +329,11 @@ struct BoardView: View {
 		let rowNr = row / 3
 		let cellRow = row % 3
 		return (rowNr < 3) ? rows[rowNr].cellAt(row: cellRow, col: col) : nil
+	}
+
+	public func cellAt(index: Int) -> Cell? {
+		let cellLocation = SudokuUtil.location(index: index)
+		return cellAt(row: cellLocation.row, col: cellLocation.col)
 	}
 
 	@StateObject private var inputNumbersList = InputNumber.getInputNumbersList()
@@ -352,8 +349,14 @@ struct BoardView: View {
 	@Environment(\.managedObjectContext) private var viewContext
 	@AppStorage("userName") private var userName = "Anonymous"
 
+	private(set) static var instance: BoardView? = nil
+
 	init(newGame: Bool) {
 		self.newGame = newGame
+		/*self.rows = [Row(rowIdx: 0, border: 1, parent: self),
+					Row(rowIdx: 1, border: 4, parent: self),
+					Row(rowIdx: 2, border: 1, parent: self)]*/
+		BoardView.instance = self
 	}
 
 	private func deleteSaveGame() {
@@ -481,19 +484,21 @@ struct BoardView: View {
 			.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
 			.environmentObject(inputNumbersList)
 			.environmentObject(clearButton)
-			.environmentObject(boardData)
+			//.environmentObject(boardData)
 
 			HStack {
 				ForEach($inputNumbersList.inputNumbersList) { inputNumber in
 					InputNumberView(inputNumber: inputNumber, bgColor: inputNumber.bgColor)
 						.environmentObject(inputNumbersList)
 						.environmentObject(clearButton)
+						//.environmentObject(boardData)
 				}
-			}.padding(.horizontal, 10)
+			}.padding(.horizontal, 0)
 
 			ClearButtonView()
 				.environmentObject(inputNumbersList)
 				.environmentObject(clearButton)
+				//.environmentObject(boardData)
 
 			/*ForEach(Array(NamedFont.namedFonts.values)) { namedFont in
 			 Text(namedFont.name)
@@ -526,6 +531,9 @@ struct BoardView: View {
 		.onAppear(perform: {
 			//MARK: prepare boardData to play the game
 			Logger.debug("BoardView.onAppear triggered")
+			for var row in rows {
+				row.parent = self
+			}
 			if (newGame) {
 				boardData.resetBoard()
 				boardData.generatePuzzle()
