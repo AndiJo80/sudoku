@@ -10,6 +10,7 @@
 		872975712A87B29400748E76 /* ArrayUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872975702A87B29400748E76 /* ArrayUtil.swift */; };
 		872975732A88E43600748E76 /* SudokuGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 872975722A88E43600748E76 /* SudokuGenerator.swift */; };
 		873CFC8D2A7FCBF6000A88C3 /* Sudoku.swift in Sources */ = {isa = PBXBuildFile; fileRef = 873CFC8C2A7FCBF6000A88C3 /* Sudoku.swift */; };
+		8747E36F2B378165007E0D12 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8747E36E2B378165007E0D12 /* Timer.swift */; };
 		874B7AB729E4283C001BFE31 /* SudokuApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AB629E4283C001BFE31 /* SudokuApp.swift */; };
 		874B7AB929E4283C001BFE31 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874B7AB829E4283C001BFE31 /* ContentView.swift */; };
 		874B7ABB29E42841001BFE31 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 874B7ABA29E42841001BFE31 /* Assets.xcassets */; };
@@ -41,6 +42,7 @@
 		872975702A87B29400748E76 /* ArrayUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayUtil.swift; sourceTree = "<group>"; };
 		872975722A88E43600748E76 /* SudokuGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuGenerator.swift; sourceTree = "<group>"; };
 		873CFC8C2A7FCBF6000A88C3 /* Sudoku.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sudoku.swift; sourceTree = "<group>"; };
+		8747E36E2B378165007E0D12 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		874B7AB329E4283C001BFE31 /* Sudoku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sudoku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		874B7AB629E4283C001BFE31 /* SudokuApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SudokuApp.swift; sourceTree = "<group>"; };
 		874B7AB829E4283C001BFE31 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				878585252A3F3B940063C9E3 /* ColorExtension.swift */,
 				872975702A87B29400748E76 /* ArrayUtil.swift */,
 				87CD8DC32B13672F00E96FEB /* ViewUtil.swift */,
+				8747E36E2B378165007E0D12 /* Timer.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -243,6 +246,7 @@
 				878585262A3F3B940063C9E3 /* ColorExtension.swift in Sources */,
 				878585282A471CD40063C9E3 /* TimerTestView.swift in Sources */,
 				8758E4392AB5A911000EFC9F /* NavigationTestView.swift in Sources */,
+				8747E36F2B378165007E0D12 /* Timer.swift in Sources */,
 				87CDBB512B25E8F5006E50A6 /* SwiftUIInputAlert.swift in Sources */,
 				87F1213629EAB032008FD529 /* LanguageSettings.swift in Sources */,
 				87E79F772A111BC600B6AE73 /* MainMenuView.swift in Sources */,

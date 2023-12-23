@@ -18,7 +18,8 @@ struct MainMenuView: View {
 		animation: .default)
 	private var savegameData: FetchedResults<SaveData>
 	@FetchRequest(
-		sortDescriptors: [NSSortDescriptor(keyPath: \HighscoreEntry.score, ascending: false)],
+		sortDescriptors: [NSSortDescriptor(keyPath: \HighscoreEntry.score, ascending: false),
+						  NSSortDescriptor(keyPath: \HighscoreEntry.playTime, ascending: true)],
 		animation: .default)
 	private var highscores: FetchedResults<HighscoreEntry>
 
@@ -98,11 +99,16 @@ struct MainMenuView: View {
 										Text("Score").font(NamedFont.headline.font)
 											.alignmentGuide(.crossAlignment,
 															computeValue: { d in d[HorizontalAlignment.leading] })
+										Text("Time").font(NamedFont.headline.font)
+											.alignmentGuide(.crossAlignment,
+															computeValue: { d in d[HorizontalAlignment.leading] })
 									}
 									ForEach(0..<highscores.count, id: \.self) { idx in
 										HStack() {
 											Text(highscores[idx].name ?? "Anonymous")
 											Text("\(highscores[idx].score)").alignmentGuide(.crossAlignment,
+																							computeValue: { d in d[HorizontalAlignment.leading] })
+											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))").alignmentGuide(.crossAlignment,
 																							computeValue: { d in d[HorizontalAlignment.leading] })
 										}
 									}

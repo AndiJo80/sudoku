@@ -16,6 +16,7 @@ class BoardData: ObservableObject {
 	@Published public var quit: Bool
 	@Published public var bgColors: [Color] = Array(repeating: .clear, count: 81)
 	@Published public var selectedCellIdx: Int = -1
+	@Published public var playTime: Int = 0
 
 	private(set) var sudoku: Sudoku?
 	public var difficulty: Difficulty
@@ -35,6 +36,7 @@ class BoardData: ObservableObject {
 		values = Array(repeating: 0, count: 81)
 		bgColors = Array(repeating: .clear, count: 81)
 		selectedCellIdx = -1
+		playTime = 0
 		/*for i in 0...80 {
 			colors[i] = .primary
 			values[i] = 0
@@ -49,6 +51,7 @@ class BoardData: ObservableObject {
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
 		lifes = (difficulty == .easy) ? 5 : 3
 		score = 0
+		playTime = 0
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
 		} while (sudoku == nil)
@@ -77,6 +80,7 @@ class BoardData: ObservableObject {
 		quit = false
 		lifes = max(1, Int(saveData.lifes))
 		score = max(0, Int(saveData.score))
+		playTime = max(0, Int(saveData.playTime))
 		let puzzle = SudokuUtil.convertToArray(dataString: saveDataPuzzle)
 		let answer = SudokuUtil.convertToArray(dataString: saveDataAnswer)
 		sudoku = Sudoku(puzzle: puzzle, answer: answer)

@@ -338,6 +338,7 @@ struct BoardView: View {
 
 	@StateObject private var inputNumbersList = InputNumber.getInputNumbersList()
 	@StateObject private var clearButton = ClearButton()
+	@StateObject private var gameTimer : TimerData = TimerData()
 	@EnvironmentObject private var boardData: BoardData
 	@State private var gameOver = false
 	@State private var showingSaveQuitAlert = false
@@ -396,6 +397,7 @@ struct BoardView: View {
 		saveData.score = Int32(boardData.score)
 		saveData.savedAt = Date.now
 		saveData.difficulty = Int16(boardData.difficulty.rawValue)
+		saveData.playTime = Int64(gameTimer.timerValue)
 
 		do {
 			try viewContext.save()
@@ -445,8 +447,8 @@ struct BoardView: View {
 
 		// only keep 10 highscore entries with highest score
 		let fetchRequest = NSFetchRequest<HighscoreEntry>(entityName: HighscoreEntry.entity().managedObjectClassName)
-		fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \HighscoreEntry.score, ascending: false)]
-		//let c = try? viewContext.count(for: fetchRequest)
+		fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \HighscoreEntry.score, ascending: false),
+										NSSortDescriptor(keyPath: \HighscoreEntry.playTime, ascending: true)]
 		if var highscore = try? viewContext.fetch(fetchRequest) {
 			Logger.debug("found \(highscore.count) highscore entries")
 			while (highscore.count > 10) { // limit to 10 entries
@@ -454,7 +456,8 @@ struct BoardView: View {
 				viewContext.delete(highscore.removeLast())
 			}
 			if (highscore.count == 10) {
-				if (highscore.last!.score < score) { // if new score is higher than lowest score in list, then delete the lowest score
+				if (   highscore.last!.score < score // if new score is higher than lowest score in list, then delete the lowest score
+					|| (highscore.last!.score == score && highscore.last!.playTime > gameTimer.timerValue)) { // or if scores are equal, but the new game was faster
 					Logger.debug("Deleting lowest highscore entry.")
 					viewContext.delete(highscore.last!)
 				} else {
@@ -467,10 +470,12 @@ struct BoardView: View {
 		let highScoreEntry = HighscoreEntry(context: viewContext)
 		highScoreEntry.name = playerName
 		highScoreEntry.score = Int32(score)
+		highScoreEntry.playTime = Int64(gameTimer.timerValue)
 	}
 
 	var body: some View {
 		VStack {
+			Text("Play time: \(formatTime(seconds: gameTimer.timerValue))")
 			HStack(spacing: 10) {
 				Text("Lives: \(boardData.lifes)")
 				Text("Score: \(boardData.score)")
@@ -516,6 +521,7 @@ struct BoardView: View {
 				Button("Yes") {
 					Logger.debug("yes pressed on Save&Quit dialog")
 
+					gameTimer.stopTimer()
 					saveGame();
 
 					boardData.quit = true
@@ -539,9 +545,12 @@ struct BoardView: View {
 				boardData.generatePuzzle()
 			}
 			boardData.prepareBoard()
+			gameTimer.timerValue = boardData.playTime
+			gameTimer.startTimer()
 		})
 		.onDisappear(perform: {
 			Logger.debug("BoardView.onDisappear triggered")
+			gameTimer.stopTimer()
 		})
 		.onChange(of: scenePhase, perform: { scenePhaseValue in // DEBUG code to try out stuff
 			Logger.debug("BoardView.onChange triggered. scenePhase changed to \(scenePhase)")
@@ -560,6 +569,7 @@ struct BoardView: View {
 			Logger.debug("BoardView.onChange triggered. Lifes changed to: \(lifes)")
 			if (lifes <= 0) {
 				gameOver = true
+				gameTimer.stopTimer()
 				saveHighScore(name: userName)
 			}
 		})
@@ -567,6 +577,7 @@ struct BoardView: View {
 			Logger.debug("BoardView.onChange triggered. Score changed to: \(score)")
 			if (boardData.isSolved()) {
 				gameWon = true
+				gameTimer.stopTimer()
 			}
 		})
 		.alert("Game Over", isPresented: $gameOver) {
