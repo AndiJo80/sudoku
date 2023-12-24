@@ -26,8 +26,9 @@ struct MainMenuView: View {
 	//@State private var navigationPath = NavigationPath()
 	//@State private var path: [String] = []
 
+	@State private var isNavigateToNewGameView = false
 	@State private var isNavigateToContinue = false
-	@State var isNavigateToSettings = false
+	@State private var isNavigateToSettings = false
 
 	var body: some View {
 		NavigationStack {
@@ -37,14 +38,18 @@ struct MainMenuView: View {
 
 				VStack (alignment: .center, spacing: 40) {
 					//MARK: New Game button
-					Button(action: { Logger.debug("starting new game") }) {
-						NavigationLink {
-							NewGameView()
+					NavigationLink(destination: EmptyView()) {
+						Button {
+							// run your code before the navigation to the new view (BoardView)
+							Logger.debug("starting new game")
+							isNavigateToNewGameView = true
 						} label: {
 							Text("New Game")
 								.frame(minWidth: 150, minHeight: 30)
 								.padding(.all, 10)
 								.border(.foreground, width: 1)
+						}.navigationDestination(isPresented: $isNavigateToNewGameView) {
+							NewGameView()
 						}
 					}
 
