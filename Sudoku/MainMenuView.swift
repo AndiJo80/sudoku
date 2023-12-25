@@ -88,26 +88,26 @@ struct MainMenuView: View {
 					Button(action: { Logger.debug("showing highscore") }) {
 						NavigationLink {
 							// Highscore View
-							VStack(alignment: .center, spacing: 150) {
+							VStack(alignment: .center, spacing: 100) {
 								Text("Highscore")
 									.font(.title)
 
 								// render highscore list
 								VStack(alignment: .crossAlignment, spacing: 10) {
-									HStack() {
+									HStack(spacing: 30) {
 										Text("Name").font(NamedFont.headline.font)
 										Text("Score").font(NamedFont.headline.font)
 											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.leading] })
+															computeValue: { d in d[HorizontalAlignment.trailing] })
 										Text("Time").font(NamedFont.headline.font)
 											.alignmentGuide(.crossAlignment,
 															computeValue: { d in d[HorizontalAlignment.leading] })
 									}
 									ForEach(0..<highscores.count, id: \.self) { idx in
-										HStack() {
+										HStack(spacing: 30) {
 											Text(highscores[idx].name ?? "Anonymous")
 											Text("\(highscores[idx].score)").alignmentGuide(.crossAlignment,
-																							computeValue: { d in d[HorizontalAlignment.leading] })
+																							computeValue: { d in d[HorizontalAlignment.trailing] })
 											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))").alignmentGuide(.crossAlignment,
 																							computeValue: { d in d[HorizontalAlignment.leading] })
 										}

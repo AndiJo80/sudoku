@@ -10,6 +10,7 @@ import SwiftUI
 
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
+	@Published public var notes: [Int]
 	@Published public var colors: [Color] = Array(repeating: .primary, count: 81)
 	@Published public var lifes: Int
 	@Published public var score: Int
@@ -25,6 +26,7 @@ class BoardData: ObservableObject {
 		Logger.entering("BoardData.<init>", difficulty)
 		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
+		notes = ArrayUtil.array81(initial: 0)
 		lifes = (difficulty == .easy) ? 5 : 3
 		score = 0
 		quit = false
@@ -32,8 +34,9 @@ class BoardData: ObservableObject {
 
 	public func resetBoard() {
 		quit = false
-		colors = Array(repeating: .primary, count: 81)
-		values = Array(repeating: 0, count: 81)
+		colors = ArrayUtil.array81(initial: Color.primary)
+		values = ArrayUtil.array81(initial: 0)
+		notes = ArrayUtil.array81(initial: 0)
 		bgColors = Array(repeating: .clear, count: 81)
 		selectedCellIdx = -1
 		playTime = 0
@@ -86,15 +89,6 @@ class BoardData: ObservableObject {
 		sudoku = Sudoku(puzzle: puzzle, answer: answer)
 		values = SudokuUtil.convertToArray(dataString: saveDataValues)
 		self.difficulty = saveDataDifficulty
-		/*for i in 0...80 {
-			if (values[i] < 1 || !canChange(index: i)) {
-				colors[i] = .primary
-			} else if (values[i] == sudoku?.answer[i] ) {
-				colors[i] = .green
-			} else {
-				colors[i] = .red
-			}
-		}*/
 	}
 
 	public func prepareBoard() {
@@ -109,10 +103,6 @@ class BoardData: ObservableObject {
 				colors[i] = .red
 			}
 		}
-	}
-
-	public func valueAt(index: Int) -> Int {
-		return values[index]
 	}
 
 	public func valueAt(row: Int, col: Int) -> Int {
@@ -173,7 +163,7 @@ class BoardData: ObservableObject {
 	}
 
 	public func updateBgColors() {
-		let myValue = valueAt(index: selectedCellIdx)
+		let myValue = values[selectedCellIdx]
 		let myLocation = SudokuUtil.location(index: selectedCellIdx)
 		for i in 0...80 {
 			let currentLocation = SudokuUtil.location(index: i)
@@ -181,7 +171,7 @@ class BoardData: ObservableObject {
 				|| currentLocation.col == myLocation.col
 				|| currentLocation.row == myLocation.row) {
 				bgColors[i] = .highlightedCellColor
-			} else if (myValue > 0 && valueAt(index: i) == myValue) {
+			} else if (myValue > 0 && values[i] == myValue) {
 				bgColors[i] = .highlightedCellColor2
 			} else {
 				bgColors[i] = .clear
