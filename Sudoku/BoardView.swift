@@ -45,9 +45,11 @@ struct Cell: View {
 	private let borderWidth: CGFloat
 	private let cellIdx: Int // global quadrant number 0-81
 	@State var cellText = " "
+	@State var cellFont = Font.body
 
 	@EnvironmentObject private var inputNumbersList: InputNumbersList
 	@EnvironmentObject private var clearButton: ClearButton
+	@EnvironmentObject private var notesButton: NotesButton
 	@EnvironmentObject private var boardData: BoardData
 
 	@inlinable public init(cellIdx: Int, border: CGFloat, color: Color) {
@@ -67,6 +69,7 @@ struct Cell: View {
 					onCellTab()
 				})
 			Text(cellText)
+				.font(cellFont)
 				.multilineTextAlignment(.center)
 				.padding(5)
 				//.border(.red, width: 1)
@@ -77,10 +80,19 @@ struct Cell: View {
 		}
 		.onAppear(perform: fillCellFromBoardData)
 		.onChange(of: boardData.values, perform: { _ in fillCellFromBoardData() })
+		.onChange(of: boardData.notes, perform: { _ in fillCellFromBoardData() })
+		.onChange(of: notesButton.selected, perform: { _ in fillCellFromBoardData() })
 	}
 
 	private func fillCellFromBoardData() {
-		let boardDataValue = boardData.valueAt(index: cellIdx)
+		let boardDataValue: Int
+		if (boardData.canChange(index: cellIdx) && !boardData.isCorrectValue(index: cellIdx) && notesButton.selected) {
+			boardDataValue = boardData.notes[cellIdx]
+			cellFont = .footnote
+		} else {
+			boardDataValue = boardData.values[cellIdx]
+			cellFont = .body
+		}
 		cellText = (boardDataValue > 0) ? String(boardDataValue) : " "
 	}
 
@@ -186,8 +198,9 @@ class InputNumber: Identifiable {
 private struct InputNumberView: View {
 	@Binding var inputNumber: InputNumber
 	@Binding var bgColor: Color
-	@EnvironmentObject var inputNumbersList: InputNumbersList
-	@EnvironmentObject var clearButton: ClearButton
+	@EnvironmentObject private var inputNumbersList: InputNumbersList
+	@EnvironmentObject private var clearButton: ClearButton
+	@EnvironmentObject private var notesButton: NotesButton
 	@EnvironmentObject private var boardData: BoardData
 
 	var body: some View {
@@ -223,8 +236,20 @@ private struct InputNumberView: View {
 			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
 			return
 		}
+		if (boardData.isCorrectValue(index: cellIdx)) {
+			Logger.debug("The value in this cell is already correct. No need to change it anymore.")
+			return
+		}
 
 		Logger.debug("Tapped input number \(inputNumber.id) with cell \(cellIdx) selected")
+
+		// change note instead of actual value
+		if (notesButton.selected) {
+			boardData.notes[cellIdx] = inputNumber.id
+			Logger.debug("new note value: \(inputNumber.id)")
+			return
+		}
+
 		let newBoardValue = inputNumber.id
 		let oldBoardValue = boardData.values[cellIdx]
 		let oldValueWasCorrect = boardData.isCorrectValue(index: cellIdx)
@@ -276,9 +301,10 @@ class ClearButton: ObservableObject {
 
 //MARK: struct ClearButtonView
 private struct ClearButtonView: View {
-	@EnvironmentObject var clearButton: ClearButton
-	@EnvironmentObject var inputNumbersList: InputNumbersList
-	@EnvironmentObject var boardData: BoardData
+	@EnvironmentObject private var clearButton: ClearButton
+	@EnvironmentObject private var inputNumbersList: InputNumbersList
+	@EnvironmentObject private var notesButton: NotesButton
+	@EnvironmentObject private var boardData: BoardData
 
 	var body: some View {
 		Text("Clear")
@@ -303,6 +329,16 @@ private struct ClearButtonView: View {
 			Logger.debug("The value in this cell is part of the initial puzzle and you cannot change it.")
 			return
 		}
+		if (boardData.isCorrectValue(index: cellIdx)) {
+			Logger.debug("The value in this cell is already correct. No need to change it anymore.")
+			return
+		}
+
+		// change note instead of actual value
+		if (notesButton.selected && !boardData.isCorrectValue(index: cellIdx)) {
+			boardData.notes[cellIdx] = -1
+			return
+		}
 
 		// decrease score if clearing a cell with a correct value
 		if (boardData.isCorrectValue(index: cellIdx)) {
@@ -315,6 +351,42 @@ private struct ClearButtonView: View {
 
 		boardData.updateBgColors()
 	 }
+}
+
+//MARK: class NotesButton
+class NotesButton: ObservableObject {
+	@Published public var selected = false {
+		didSet {
+			bgColor = selected ? Color.selectedButtonColor : Color.clear
+		}
+	}
+	@Published private(set) var bgColor: Color = Color.clear
+}
+
+//MARK: struct NotesButtonView
+private struct NotesButtonView: View {
+	@EnvironmentObject private var notesButtonData: NotesButton
+	@EnvironmentObject private var boardData: BoardData
+
+	var body: some View {
+		//Image(systemName: "pencil.and.list.clipboard")
+			//.dynamicTypeSize(.xxxLarge)
+		Label("Draft", systemImage: "pencil.and.list.clipboard")
+			.font(.body)
+			.padding(8)
+			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
+			.border(.foreground, width: 1)
+			.gesture(TapGesture().onEnded { event in  // add tab listener
+				print("Tapped Notes")
+				onNotesButtonTab()
+			})
+			.background(notesButtonData.bgColor)
+	}
+
+	//MARK: onNotesButtonTab() event handler
+	private func onNotesButtonTab() {
+		notesButtonData.selected = !notesButtonData.selected
+	}
 }
 
 //MARK: struct BoardView
@@ -338,6 +410,7 @@ struct BoardView: View {
 
 	@StateObject private var inputNumbersList = InputNumber.getInputNumbersList()
 	@StateObject private var clearButton = ClearButton()
+	@StateObject private var notesButton = NotesButton()
 	@StateObject private var gameTimer : TimerData = TimerData()
 	@EnvironmentObject private var boardData: BoardData
 	@State private var gameOver = false
@@ -489,26 +562,26 @@ struct BoardView: View {
 			.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
 			.environmentObject(inputNumbersList)
 			.environmentObject(clearButton)
-			//.environmentObject(boardData)
+			.environmentObject(notesButton)
 
 			HStack {
 				ForEach($inputNumbersList.inputNumbersList) { inputNumber in
 					InputNumberView(inputNumber: inputNumber, bgColor: inputNumber.bgColor)
 						.environmentObject(inputNumbersList)
 						.environmentObject(clearButton)
-						//.environmentObject(boardData)
+						.environmentObject(notesButton)
 				}
 			}.padding(.horizontal, 0)
 
-			ClearButtonView()
-				.environmentObject(inputNumbersList)
-				.environmentObject(clearButton)
-				//.environmentObject(boardData)
+			HStack(spacing: 10) {
+				ClearButtonView()
+					.environmentObject(inputNumbersList)
+					.environmentObject(clearButton)
+					.environmentObject(notesButton)
 
-			/*ForEach(Array(NamedFont.namedFonts.values)) { namedFont in
-			 Text(namedFont.name)
-			 .font(namedFont.font)
-			 }*/
+				NotesButtonView()
+					.environmentObject(notesButton)
+			}.padding(.horizontal)
 		}
 		.toolbar(content: {
 			Button(action: {
