@@ -7,17 +7,13 @@
 
 import SwiftUI
 
-enum Difficulty : Int {
-	case easy = 0, medium = 1, hard = 2, expert = 3, hell = 4
-}
-
 struct NewGameView: View {
 	@Environment(\.dismiss) private var dismiss
 	@State var difficulty: Difficulty = Difficulty.medium
 	var boardData = BoardData(difficulty: .medium)
 
 	var body: some View {
-		NavigationView {
+		NavigationStack {
 			VStack (alignment: .center, spacing: 150) {
 				Text("Start New Game")
 					.font(.title)
@@ -49,7 +45,7 @@ struct NewGameView: View {
 								.background((difficulty == .medium) ? Color.selectedButtonColor : Color.clear)
 								.border(.foreground, width: 1)
 						}
-					}.padding(.horizontal)
+					}.padding(.horizontal, 50)
 					HStack(spacing: 10) {
 						Button(action: {
 							difficulty = .hard
@@ -73,7 +69,7 @@ struct NewGameView: View {
 								.background((difficulty == .expert) ? Color.selectedButtonColor : Color.clear)
 								.border(.foreground, width: 1)
 						}
-					}.padding(.horizontal)
+					}.padding(.horizontal, 50)
 				}
 				//MARK: Start button
 				Button(action: { Logger.debug("starting new game") }) {

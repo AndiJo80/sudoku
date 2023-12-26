@@ -7,6 +7,29 @@
 
 import Foundation
 
+enum Difficulty : Int {
+	case easy = 0, medium = 1, hard = 2, expert = 3, hell = 4
+
+	public static func valueOf(_ val: Int) -> Difficulty {
+		return Difficulty(rawValue: val) ?? .easy
+	}
+
+	public func toString() -> String {
+		switch self {
+		case .easy:
+			return "Easy"
+		case .medium:
+			return "Medium"
+		case .hard:
+			return "Hard"
+		case .expert:
+			return "Expert"
+		case .hell:
+			return "Hell"
+		}
+	}
+}
+
 enum Holes: Int {
 	case CONST_EASY_HOLES = 40,
 	CONST_MEDIUM_HOLES = 45,

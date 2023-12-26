@@ -544,6 +544,7 @@ struct BoardView: View {
 		highScoreEntry.name = playerName
 		highScoreEntry.score = Int32(score)
 		highScoreEntry.playTime = Int64(gameTimer.timerValue)
+		highScoreEntry.difficulty = Int16(boardData.difficulty.rawValue)
 	}
 
 	var body: some View {

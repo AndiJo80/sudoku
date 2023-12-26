@@ -99,6 +99,8 @@ struct PersistenceController {
 			let highscoreEntry = HighscoreEntry(context: viewContext)
 			highscoreEntry.name = name
 			highscoreEntry.score = Int32(score)
+			highscoreEntry.playTime = .random(in: 10...1000)
+			highscoreEntry.difficulty = .random(in: 0...3)
 		}
 
 		do {

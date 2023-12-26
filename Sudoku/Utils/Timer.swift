@@ -37,7 +37,7 @@ public func formatTime(seconds: Int) -> String {
 	let min: Int = seconds / 60
 	let sec: Int = seconds % 60
 	if (min == 0) {
-		return "\(sec) sec"
+		return "\(sec)s"
 	}
-	return "\(min) min  \(sec) sec"
+	return "\(min)m  \(sec)s"
 }

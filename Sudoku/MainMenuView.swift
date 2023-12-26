@@ -96,20 +96,32 @@ struct MainMenuView: View {
 								VStack(alignment: .crossAlignment, spacing: 10) {
 									HStack(spacing: 30) {
 										Text("Name").font(NamedFont.headline.font)
-										Text("Score").font(NamedFont.headline.font)
-											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.trailing] })
-										Text("Time").font(NamedFont.headline.font)
 											.alignmentGuide(.crossAlignment,
 															computeValue: { d in d[HorizontalAlignment.leading] })
+										Text("Score").font(NamedFont.headline.font)
+											.alignmentGuide(.crossAlignment,
+															computeValue: { d in d[HorizontalAlignment.leading] })
+										Text("Time").font(NamedFont.headline.font)
+											.alignmentGuide(.crossAlignment,
+															computeValue: { d in d[HorizontalAlignment.center] })
+										Text("Level").font(NamedFont.headline.font)
+											.alignmentGuide(.crossAlignment,
+															computeValue: { d in d[HorizontalAlignment.trailing] })
 									}
 									ForEach(0..<highscores.count, id: \.self) { idx in
 										HStack(spacing: 30) {
 											Text(highscores[idx].name ?? "Anonymous")
-											Text("\(highscores[idx].score)").alignmentGuide(.crossAlignment,
-																							computeValue: { d in d[HorizontalAlignment.trailing] })
-											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))").alignmentGuide(.crossAlignment,
-																							computeValue: { d in d[HorizontalAlignment.leading] })
+												.alignmentGuide(.crossAlignment,
+																computeValue: { d in d[HorizontalAlignment.leading] })
+											Text("\(highscores[idx].score)")
+												.alignmentGuide(.crossAlignment,
+																computeValue: { d in d[HorizontalAlignment.leading] })
+											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))")
+												.alignmentGuide(.crossAlignment,
+																computeValue: { d in d[HorizontalAlignment.center] })
+											Text(Difficulty.valueOf(Int(highscores[idx].difficulty)).toString())
+												.alignmentGuide(.crossAlignment,
+																computeValue: { d in d[HorizontalAlignment.trailing] })
 										}
 									}
 								}.visibility(highscores.isEmpty ? .gone : .visible)
@@ -165,7 +177,7 @@ struct MainMenuView: View {
 extension HorizontalAlignment {
 	private enum CrossAlignment : AlignmentID {
 		static func defaultValue(in d: ViewDimensions) -> CGFloat {
-			return d[.leading]
+			return d[.trailing]
 		}
 	}
 	static let crossAlignment = HorizontalAlignment(CrossAlignment.self)
