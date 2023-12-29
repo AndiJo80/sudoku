@@ -205,7 +205,7 @@ private struct InputNumberView: View {
 
 	var body: some View {
 		Text(String(inputNumber.id))
-			.padding(10)
+			.padding(11)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
 			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
@@ -389,6 +389,48 @@ private struct NotesButtonView: View {
 	}
 }
 
+private struct HintButtonView: View {
+	@EnvironmentObject private var boardData: BoardData
+
+	var body: some View {
+		let labelText = boardData.hintsAvailable > 1 ? "\(boardData.hintsAvailable) Hints" : "\(boardData.hintsAvailable) Hint"
+		Label(labelText, systemImage: "lightbulb.max")
+			.font(.body)
+			.padding(8)
+			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
+			.border(.foreground, width: 1)
+			.foregroundStyle(boardData.hintsAvailable > 0 ? Color.primary : Color.gray)
+			.gesture(TapGesture().onEnded { event in  // add tab listener
+				print("Tapped Hint")
+				onHintButtonTab()
+			})
+	}
+
+	//MARK: onNotesButtonTab() event handler
+	private func onHintButtonTab() {
+		if (boardData.hintsAvailable < 1) {
+			Logger.debug("No more hints available")
+			return
+		}
+		let emptyCellsIdx = boardData.values.enumerated().map { (idx, val) in
+			if (val < 1 && boardData.canChange(index: idx) && !boardData.isCorrectValue(index: idx)) {
+				return idx
+			}
+			return -1
+		}.filter { $0 > -1 }
+		if (emptyCellsIdx.count < 2) {
+			Logger.debug("Only \(emptyCellsIdx.count) empty cells found")
+			return
+		}
+		if let hintIdx = emptyCellsIdx.randomElement(),
+		   let answer = boardData.sudoku?.answer[hintIdx] {
+			boardData.hintsAvailable -= 1
+			boardData.values[hintIdx] = answer
+			boardData.validate()
+		}
+	}
+}
+
 //MARK: struct BoardView
 struct BoardView: View {
 	//let dismiss: DismissAction
@@ -471,6 +513,7 @@ struct BoardView: View {
 		saveData.savedAt = Date.now
 		saveData.difficulty = Int16(boardData.difficulty.rawValue)
 		saveData.playTime = Int64(gameTimer.timerValue)
+		saveData.hintsAvailable = Int16(boardData.hintsAvailable)
 
 		do {
 			try viewContext.save()
@@ -548,11 +591,13 @@ struct BoardView: View {
 	}
 
 	var body: some View {
-		VStack {
-			Text("Play time: \(formatTime(seconds: gameTimer.timerValue))")
-			HStack(spacing: 10) {
-				Text("Lives: \(boardData.lifes)")
-				Text("Score: \(boardData.score)")
+		VStack(spacing: 20) {
+			VStack {
+				Text("Play time: \(formatTime(seconds: gameTimer.timerValue))")
+				HStack(spacing: 10) {
+					Text("Lives: \(boardData.lifes)")
+					Text("Score: \(boardData.score)")
+				}
 			}
 			VStack (alignment: .center, spacing: -4) {
 				rows[0].zIndex(0)
@@ -574,7 +619,9 @@ struct BoardView: View {
 				}
 			}.padding(.horizontal, 0)
 
-			HStack(spacing: 10) {
+			HStack(spacing: 30) {
+				HintButtonView()
+
 				ClearButtonView()
 					.environmentObject(inputNumbersList)
 					.environmentObject(clearButton)
@@ -582,6 +629,7 @@ struct BoardView: View {
 
 				NotesButtonView()
 					.environmentObject(notesButton)
+				
 			}.padding(.horizontal)
 		}
 		.toolbar(content: {

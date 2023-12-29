@@ -93,38 +93,37 @@ struct MainMenuView: View {
 									.font(.title)
 
 								// render highscore list
-								VStack(alignment: .crossAlignment, spacing: 10) {
-									HStack(spacing: 30) {
+								HStack(spacing: 30) {
+									VStack(alignment: .trailing, spacing: 10) {
 										Text("Name").font(NamedFont.headline.font)
-											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.leading] })
-										Text("Score").font(NamedFont.headline.font)
-											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.leading] })
-										Text("Time").font(NamedFont.headline.font)
-											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.center] })
-										Text("Level").font(NamedFont.headline.font)
-											.alignmentGuide(.crossAlignment,
-															computeValue: { d in d[HorizontalAlignment.trailing] })
-									}
-									ForEach(0..<highscores.count, id: \.self) { idx in
-										HStack(spacing: 30) {
+										ForEach(0..<highscores.count, id: \.self) { idx in
 											Text(highscores[idx].name ?? "Anonymous")
-												.alignmentGuide(.crossAlignment,
-																computeValue: { d in d[HorizontalAlignment.leading] })
-											Text("\(highscores[idx].score)")
-												.alignmentGuide(.crossAlignment,
-																computeValue: { d in d[HorizontalAlignment.leading] })
-											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))")
-												.alignmentGuide(.crossAlignment,
-																computeValue: { d in d[HorizontalAlignment.center] })
-											Text(Difficulty.valueOf(Int(highscores[idx].difficulty)).toString())
-												.alignmentGuide(.crossAlignment,
-																computeValue: { d in d[HorizontalAlignment.trailing] })
+												.lineLimit(1)
 										}
 									}
-								}.visibility(highscores.isEmpty ? .gone : .visible)
+									VStack(alignment: .trailing, spacing: 10) {
+										Text("Score").font(NamedFont.headline.font)
+										ForEach(0..<highscores.count, id: \.self) { idx in
+											Text("\(highscores[idx].score)")
+												.lineLimit(1)
+										}
+									}
+									VStack(alignment: .trailing, spacing: 10) {
+										Text("Time").font(NamedFont.headline.font)
+										ForEach(0..<highscores.count, id: \.self) { idx in
+											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))")
+												.lineLimit(1)
+										}
+									}
+									VStack(alignment: .trailing, spacing: 10) {
+										Text("Level").font(NamedFont.headline.font)
+										ForEach(0..<highscores.count, id: \.self) { idx in
+											Text(Difficulty.valueOf(Int(highscores[idx].difficulty)).toString())
+												.lineLimit(1)
+										}
+									}
+								}
+								.visibility(highscores.isEmpty ? .gone : .visible)
 								VStack(alignment: .center) {
 									Text("Highscore is still empty.")
 									Text("Play the game and fill the list.")
