@@ -45,7 +45,7 @@ struct Cell: View {
 	private let borderWidth: CGFloat
 	private let cellIdx: Int // global quadrant number 0-81
 	@State var cellText = " "
-	@State var cellFont = Font.body
+	@State var cellFont = Font.title
 
 	@EnvironmentObject private var inputNumbersList: InputNumbersList
 	@EnvironmentObject private var clearButton: ClearButton
@@ -91,7 +91,7 @@ struct Cell: View {
 			cellFont = .footnote
 		} else {
 			boardDataValue = boardData.values[cellIdx]
-			cellFont = .body
+			cellFont = .title
 		}
 		cellText = (boardDataValue > 0) ? String(boardDataValue) : " "
 	}
@@ -205,7 +205,8 @@ private struct InputNumberView: View {
 
 	var body: some View {
 		Text(String(inputNumber.id))
-			.padding(11)
+			.font(Font.title)
+			.padding(8)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
 			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
@@ -412,6 +413,7 @@ private struct HintButtonView: View {
 			Logger.debug("No more hints available")
 			return
 		}
+		// find empty cells and their index
 		let emptyCellsIdx = boardData.values.enumerated().map { (idx, val) in
 			if (val < 1 && boardData.canChange(index: idx) && !boardData.isCorrectValue(index: idx)) {
 				return idx
@@ -425,6 +427,11 @@ private struct HintButtonView: View {
 		if let hintIdx = emptyCellsIdx.randomElement(),
 		   let answer = boardData.sudoku?.answer[hintIdx] {
 			boardData.hintsAvailable -= 1
+			if (emptyCellsIdx.count == 2) {
+				// after filling the hint, there will be only 1 empty cell. so disable hints because the player don't need them anymore.
+				boardData.hintsAvailable = 0
+			}
+			// fill the hint into the board
 			boardData.values[hintIdx] = answer
 			boardData.validate()
 		}
@@ -592,23 +599,23 @@ struct BoardView: View {
 
 	var body: some View {
 		VStack(spacing: 20) {
-			VStack {
+			VStack(spacing: 2) {
 				Text("Play time: \(formatTime(seconds: gameTimer.timerValue))")
 				HStack(spacing: 10) {
 					Text("Lives: \(boardData.lifes)")
 					Text("Score: \(boardData.score)")
 				}
+				VStack (alignment: .center, spacing: -4) {
+					rows[0].zIndex(0)
+					rows[1].zIndex(1) // Top layer.
+					rows[2].zIndex(0)
+				}
+				.padding(10)
+				.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
+				.environmentObject(inputNumbersList)
+				.environmentObject(clearButton)
+				.environmentObject(notesButton)
 			}
-			VStack (alignment: .center, spacing: -4) {
-				rows[0].zIndex(0)
-				rows[1].zIndex(1) // Top layer.
-				rows[2].zIndex(0)
-			}
-			.padding(10)
-			.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
-			.environmentObject(inputNumbersList)
-			.environmentObject(clearButton)
-			.environmentObject(notesButton)
 
 			HStack {
 				ForEach($inputNumbersList.inputNumbersList) { inputNumber in

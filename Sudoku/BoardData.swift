@@ -23,13 +23,47 @@ class BoardData: ObservableObject {
 	private(set) var sudoku: Sudoku?
 	public var difficulty: Difficulty
 
+	private static func hintsAvailable(for difficulty: Difficulty) -> Int {
+		let hintsAvailable: Int
+		switch difficulty {
+		case .easy:
+			hintsAvailable = 10
+		case .medium:
+			hintsAvailable = 10
+		case .hard:
+			hintsAvailable = 5
+		case .expert:
+			hintsAvailable = 5
+		case .hell:
+			hintsAvailable = 3
+		}
+		return hintsAvailable
+	}
+
+	private static func lifes(for difficulty: Difficulty) -> Int {
+		let lifes: Int
+		switch difficulty {
+		case .easy:
+			lifes = 6
+		case .medium:
+			lifes = 5
+		case .hard:
+			lifes = 4
+		case .expert:
+			lifes = 3
+		case .hell:
+			lifes = 3
+		}
+		return lifes
+	}
+
 	public init(difficulty: Difficulty) {
 		Logger.entering("BoardData.<init>", difficulty)
 		self.difficulty = difficulty
 		values = ArrayUtil.array81(initial: 0)
 		notes = ArrayUtil.array81(initial: 0)
-		lifes = (difficulty == .easy) ? 5 : 3
-		hintsAvailable = difficulty == .easy ? 5 :  4
+		lifes = BoardData.lifes(for: difficulty)
+		hintsAvailable = BoardData.hintsAvailable(for: difficulty)
 		score = 0
 		quit = false
 	}
@@ -41,12 +75,6 @@ class BoardData: ObservableObject {
 		notes = ArrayUtil.array81(initial: 0)
 		bgColors = Array(repeating: .clear, count: 81)
 		selectedCellIdx = -1
-		playTime = 0
-		hintsAvailable = difficulty == .easy ? 5 :  4
-		/*for i in 0...80 {
-			colors[i] = .primary
-			values[i] = 0
-		}*/
 	}
 
 	public func isInitialized() -> Bool {
@@ -55,10 +83,10 @@ class BoardData: ObservableObject {
 
 	public func generatePuzzle() {
 		Logger.debug("Generating sudoku puzzle with difficulty \(difficulty)")
-		lifes = (difficulty == .easy) ? 5 : 3
+		lifes = BoardData.lifes(for: difficulty)
 		score = 0
 		playTime = 0
-		hintsAvailable = difficulty == .easy ? 5 :  4
+		hintsAvailable = BoardData.hintsAvailable(for: difficulty)
 		repeat {
 			sudoku = SudokuGenerator.generate(level: difficulty)
 		} while (sudoku == nil)
