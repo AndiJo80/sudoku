@@ -206,8 +206,8 @@ private struct InputNumberView: View {
 	var body: some View {
 		Text(String(inputNumber.id))
 			.font(Font.title)
-			.padding(8)
-			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
+			.padding(SudokuApp.deviceType == .phone ? 8 : 20)
+			.aspectRatio(CGSize(width: 1, height: BoardView.cellHeightRatio), contentMode: .fit)
 			.border(.foreground, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
@@ -440,6 +440,8 @@ private struct HintButtonView: View {
 
 //MARK: struct BoardView
 struct BoardView: View {
+	fileprivate static let cellHeightRatio = SudokuApp.deviceType == .phone ? 1.4 : 1.1
+
 	//let dismiss: DismissAction
 	private var newGame: Bool
 	private let rows = [Row(rowIdx: 0, border: 1),
@@ -610,8 +612,9 @@ struct BoardView: View {
 					rows[1].zIndex(1) // Top layer.
 					rows[2].zIndex(0)
 				}
-				.padding(10)
-				.aspectRatio(CGSize(width: 1, height: 1.4), contentMode: .fit)
+				.padding(.vertical, 10)
+				.padding(.horizontal, SudokuApp.deviceType == .phone ? 10 : 40)
+				.aspectRatio(CGSize(width: 1, height: BoardView.cellHeightRatio), contentMode: .fit)
 				.environmentObject(inputNumbersList)
 				.environmentObject(clearButton)
 				.environmentObject(notesButton)
@@ -637,7 +640,9 @@ struct BoardView: View {
 				NotesButtonView()
 					.environmentObject(notesButton)
 				
-			}.padding(.horizontal)
+			}
+			.padding(.horizontal)
+			.padding(.bottom, SudokuApp.deviceType == .phone ? 5 : 60)
 		}
 		.toolbar(content: {
 			Button(action: {
