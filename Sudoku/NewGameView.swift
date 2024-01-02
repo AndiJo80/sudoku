@@ -17,11 +17,13 @@ struct NewGameView: View {
 			VStack (alignment: .center, spacing: 150) {
 				Text("Start New Game")
 					.font(.title)
+					.foregroundStyle(Color.textColor)
 
 				VStack (alignment: .center, spacing: 20) {
 					//MARK: difficulty buttons
 					Text("Difficulty")
 						.font(.title)
+						.foregroundStyle(Color.textColor)
 					HStack(spacing: 10) {
 						Button(action: {
 							difficulty = .easy

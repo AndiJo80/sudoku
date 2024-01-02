@@ -80,7 +80,7 @@ struct SettingsView: View {
 					Text("Reset Highscore").background(Color.clear)
 				}
 				.disabled(highscore.isEmpty)
-				.background(in: .rect(cornerSize: CGSize(width: 5, height: 5), style: .circular))
+				//.background(in: .rect(cornerSize: CGSize(width: 5, height: 5), style: .circular))
 				.padding(10)
 				.alert("Reset Highscore", isPresented: $showingDeleteHighscoreAlert) {
 					Button("Yes") {
@@ -112,7 +112,7 @@ struct SettingsView: View {
 					Text("Delete Savegame").background(Color.clear)
 				}
 				.disabled(savegameData.isEmpty)
-				.background(in: .rect(cornerSize: CGSize(width: 5, height: 5), style: .circular))
+				//.background(in: .rect(cornerSize: CGSize(width: 5, height: 5), style: .circular))
 				.padding(10)
 				.alert("Delete Saved Game", isPresented: $showingDeleteSavegameAlert) {
 					Button("Yes") {
@@ -137,6 +137,7 @@ struct SettingsView: View {
 				}
 			}
 			Text("Version: \(version)")
+				.foregroundStyle(Color.textColor)
 				.alignmentGuide(HorizontalAlignment.trailing) { d in return d[.trailing] + 20 }
 		}
 	}

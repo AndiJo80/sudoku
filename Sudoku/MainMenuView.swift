@@ -91,42 +91,47 @@ struct MainMenuView: View {
 							VStack(alignment: .center, spacing: 100) {
 								Text("Highscore")
 									.font(.title)
+									.foregroundStyle(Color.textColor)
 
 								// render highscore list
 								HStack(spacing: 30) {
 									VStack(alignment: .trailing, spacing: 10) {
-										Text("Name").font(NamedFont.headline.font)
+										Text("Name").font(NamedFont.headline.font).foregroundStyle(Color.textColor)
 										ForEach(0..<highscores.count, id: \.self) { idx in
 											Text(highscores[idx].name ?? "Anonymous")
+												.foregroundStyle(Color.textColor)
 												.lineLimit(1)
 										}
 									}
 									VStack(alignment: .trailing, spacing: 10) {
-										Text("Score").font(NamedFont.headline.font)
+										Text("Score").font(NamedFont.headline.font).foregroundStyle(Color.textColor)
 										ForEach(0..<highscores.count, id: \.self) { idx in
 											Text("\(highscores[idx].score)")
+												.foregroundStyle(Color.textColor)
 												.lineLimit(1)
 										}
 									}
 									VStack(alignment: .trailing, spacing: 10) {
-										Text("Time").font(NamedFont.headline.font)
+										Text("Time").font(NamedFont.headline.font).foregroundStyle(Color.textColor)
 										ForEach(0..<highscores.count, id: \.self) { idx in
 											Text("\(formatTime(seconds: Int(highscores[idx].playTime)))")
+												.foregroundStyle(Color.textColor)
 												.lineLimit(1)
 										}
 									}
 									VStack(alignment: .trailing, spacing: 10) {
-										Text("Level").font(NamedFont.headline.font)
+										Text("Level").font(NamedFont.headline.font).foregroundStyle(Color.textColor)
 										ForEach(0..<highscores.count, id: \.self) { idx in
 											Text(Difficulty.valueOf(Int(highscores[idx].difficulty)).toString())
+												.foregroundStyle(Color.textColor)
 												.lineLimit(1)
 										}
 									}
 								}
 								.visibility(highscores.isEmpty ? .gone : .visible)
 								VStack(alignment: .center) {
-									Text("Highscore is still empty.")
-									Text("Play the game and fill the list.")
+									Text("Highscore is still empty.").foregroundStyle(Color.textColor)
+									Text("Play the game and fill the list.").foregroundStyle(Color.textColor)
 								}.visibility(highscores.isEmpty ? .visible : .gone)
 							}
 						} label: {

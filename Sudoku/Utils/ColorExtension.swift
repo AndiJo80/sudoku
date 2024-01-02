@@ -58,19 +58,22 @@ public extension Color {
 	static let highlightedCellColor = Color.color(name: "HighlightedCellColor")
 	static let highlightedCellColor2 = Color.color(name: "HighlightedCellColor2")
 	static let selectedCellColor = Color.color(name: "SelectedCellColor")
+	static let textColor = Color.color(name: "TextColor")
 
 	static let allColors: [Color] = [
 		selectedButtonColor,
 		highlightedCellColor,
 		highlightedCellColor2,
-		selectedCellColor
+		selectedCellColor,
+		textColor
 	]
 
 	static let allNames = [
 		"SelectedButtonColor",
 		"HighlightedCellColor",
 		"HighlightedCellColor2",
-		"SelectedCellColor"
+		"SelectedCellColor",
+		"TextColor"
 	]
 
 	private static func color(name: String) -> Color {

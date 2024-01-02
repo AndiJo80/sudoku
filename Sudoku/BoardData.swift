@@ -11,7 +11,7 @@ import SwiftUI
 class BoardData: ObservableObject {
 	@Published public var values: [Int]
 	@Published public var notes: [Int]
-	@Published public var colors: [Color] = Array(repeating: .primary, count: 81)
+	@Published public var colors: [Color] = Array(repeating: .textColor, count: 81)
 	@Published public var lifes: Int
 	@Published public var score: Int
 	@Published public var quit: Bool
@@ -70,7 +70,7 @@ class BoardData: ObservableObject {
 
 	public func resetBoard() {
 		quit = false
-		colors = ArrayUtil.array81(initial: Color.primary)
+		colors = ArrayUtil.array81(initial: Color.textColor)
 		values = ArrayUtil.array81(initial: 0)
 		notes = ArrayUtil.array81(initial: 0)
 		bgColors = Array(repeating: .clear, count: 81)
@@ -129,7 +129,7 @@ class BoardData: ObservableObject {
 		selectedCellIdx = -1
 		for i in 0...80 {
 			if (values[i] < 1 || !canChange(index: i)) {
-				colors[i] = .primary
+				colors[i] = .textColor
 			} else if (values[i] == sudoku?.answer[i] ) {
 				colors[i] = .blue
 			} else {
@@ -154,7 +154,7 @@ class BoardData: ObservableObject {
 	public func validate() -> Bool {
 		var valid = true
 		for i in 0...80 {
-			colors[i] = .primary
+			colors[i] = .textColor
 			if (values[i] > 0) {
 				if (sudoku!.answer[i] != values[i]) {
 					colors[i] = .red

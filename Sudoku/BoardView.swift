@@ -35,7 +35,7 @@ struct Row: View {
 			quadrants[0]
 			quadrants[1]
 			quadrants[2]
-		}.border(.foreground, width: borderWidth)
+		}.border(Color.textColor, width: borderWidth)
 	}
 }
 
@@ -62,8 +62,8 @@ struct Cell: View {
 	var body: some View {
 		ZStack(alignment: .center) {
 			cellCanvas
-				.foregroundColor(.clear)
-				.border(.foreground, width: borderWidth)
+				.foregroundStyle(.clear)
+				.border(Color.textColor, width: borderWidth)
 				.background(boardData.bgColors[cellIdx])
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
@@ -76,7 +76,7 @@ struct Cell: View {
 				.gesture(TapGesture().onEnded { event in  // add tab listener
 					onCellTab()
 				})
-				.foregroundColor(boardData.colors[cellIdx])
+				.foregroundStyle(boardData.colors[cellIdx])
 		}
 		.onAppear(perform: fillCellFromBoardData)
 		.onChange(of: boardData.values, perform: { _ in fillCellFromBoardData() })
@@ -155,7 +155,7 @@ struct Quadrant: View {
 				cells[2][1]
 				cells[2][2]
 			}
-		}.border(.foreground, width: borderWidth)
+		}.border(Color.textColor, width: borderWidth)
 	}
 }
 
@@ -208,7 +208,7 @@ private struct InputNumberView: View {
 			.font(Font.title)
 			.padding(SudokuApp.deviceType == .phone ? 8 : 20)
 			.aspectRatio(CGSize(width: 1, height: BoardView.cellHeightRatio), contentMode: .fit)
-			.border(.foreground, width: 1)
+			.border(Color.textColor, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
 					Logger.debug("Do not allow to select \(inputNumber.id)")
@@ -219,7 +219,7 @@ private struct InputNumberView: View {
 			})
 			.background(bgColor)
 			.padding(.horizontal, 1)
-			.foregroundStyle((boardData.countOccurences(of: inputNumber.id) < 9) ? Color.primary : Color.gray)
+			.foregroundStyle((boardData.countOccurences(of: inputNumber.id) < 9) ? Color.textColor : Color.gray)
 			.onChange(of: boardData.score, perform: { _ in
 				if (boardData.countOccurences(of: inputNumber.id) >= 9) {
 					bgColor = .clear
@@ -311,7 +311,8 @@ private struct ClearButtonView: View {
 		Text("Clear")
 			.padding(10)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
-			.border(.foreground, width: 1)
+			.foregroundStyle(Color.textColor)
+			.border(Color.textColor, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped Clear")
 				onClearButtonTab()
@@ -376,7 +377,8 @@ private struct NotesButtonView: View {
 			.font(.body)
 			.padding(8)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
-			.border(.foreground, width: 1)
+			.foregroundStyle(Color.textColor)
+			.border(Color.textColor, width: 1)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped Notes")
 				onNotesButtonTab()
@@ -399,8 +401,8 @@ private struct HintButtonView: View {
 			.font(.body)
 			.padding(8)
 			.aspectRatio(CGSize(width: 1, height: 1.5), contentMode: .fit)
-			.border(.foreground, width: 1)
-			.foregroundStyle(boardData.hintsAvailable > 0 ? Color.primary : Color.gray)
+			.border(Color.textColor, width: 1)
+			.foregroundStyle(boardData.hintsAvailable > 0 ? Color.textColor : Color.gray)
 			.gesture(TapGesture().onEnded { event in  // add tab listener
 				print("Tapped Hint")
 				onHintButtonTab()
@@ -602,10 +604,10 @@ struct BoardView: View {
 	var body: some View {
 		VStack(spacing: 20) {
 			VStack(spacing: 2) {
-				Text("Play time: \(formatTime(seconds: gameTimer.timerValue))")
+				Text("Play time: \(formatTime(seconds: gameTimer.timerValue))").foregroundStyle(Color.textColor)
 				HStack(spacing: 10) {
-					Text("Lives: \(boardData.lifes)")
-					Text("Score: \(boardData.score)")
+					Text("Lives: \(boardData.lifes)").foregroundStyle(Color.textColor)
+					Text("Score: \(boardData.score)").foregroundStyle(Color.textColor)
 				}
 				VStack (alignment: .center, spacing: -4) {
 					rows[0].zIndex(0)
